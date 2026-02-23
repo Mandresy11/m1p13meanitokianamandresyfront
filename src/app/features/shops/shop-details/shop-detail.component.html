@@ -37,9 +37,34 @@
       </div>
     </div>
 
-    <!-- CORPS (vide pour l'instant) -->
+    <!-- CORPS -->
     <div class="page-body">
-    </div>
 
+      <!-- 🆕 Card Description -->
+      <div class="card">
+        <h2 class="card-title">
+          <span>📋</span> À propos de la boutique
+        </h2>
+        <p class="card-text">{{ shop.description }}</p>
+      </div>
+
+      <!-- 🆕 Card Horaires + Contact -->
+      <div class="card card-row">
+
+        <div class="info-block">
+          <h3 class="info-label"><span>🕐</span> Horaires d'ouverture</h3>
+          <p class="info-value">{{ shop.openingHours }}</p>
+        </div>
+
+        <div class="divider-v"></div>
+
+        <div class="info-block">
+          <h3 class="info-label"><span>📞</span> Téléphone</h3>
+          <a [href]="getTelLink()" class="info-value info-link">{{ shop.phone }}</a>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 </div>

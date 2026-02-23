@@ -10,7 +10,7 @@
   background: #f5f7fa;
 }
 
-/* ── HERO ── */
+/*HERO*/
 .shop-hero {
   position: relative;
   height: 420px;
@@ -104,7 +104,7 @@
   margin: 0;
 }
 
-/* ── CORPS ── */
+/*CORPS*/
 .page-body {
   max-width: 1200px;
   margin: 0 auto;
@@ -112,6 +112,72 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+/* CARDS*/
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-text {
+  color: #4b5563;
+  line-height: 1.8;
+  font-size: 0.9375rem;
+  margin: 0;
+}
+
+.card-row {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.info-block { flex: 1; }
+
+.info-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #667eea;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.info-value {
+  color: #374151;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.info-link {
+  text-decoration: none;
+  color: #374151;
+  transition: color 0.2s;
+}
+
+.info-link:hover { color: #667eea; }
+
+.divider-v {
+  width: 1px;
+  height: 60px;
+  background: #e5e7eb;
+  flex-shrink: 0;
 }
 
 /* ── 404 ── */
@@ -143,15 +209,18 @@
   box-shadow: 0 8px 25px rgba(102,126,234,0.45);
 }
 
+/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .shop-hero  { height: 300px; }
   .hero-logo  { width: 65px; height: 65px; }
   .hero-title { font-size: 1.5rem; }
+  .card-row   { flex-direction: column; gap: 1.25rem; }
+  .divider-v  { display: none; }
 }
 
 @media (max-width: 480px) {
-  .shop-hero   { height: 250px; }
+  .shop-hero    { height: 250px; }
   .hero-content { gap: 1rem; }
-  .hero-logo   { width: 55px; height: 55px; }
-  .page-body   { padding: 1.5rem 1rem 4rem; }
+  .hero-logo    { width: 55px; height: 55px; }
+  .page-body    { padding: 1.5rem 1rem 4rem; }
 }
