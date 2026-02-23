@@ -2,15 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { User, LoginRequest, RegisterRequest, AuthResponse } from '../models/user.model';
+import { User, LoginRequest, RegisterRequest, AuthResponse, UserResponse } from '../models/user.model';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = environment.apiUrl + '/auth';
 
   private utilisateurConnecte = new BehaviorSubject<User | null>(
     this.recupererUtilisateurLocal()
@@ -36,12 +36,14 @@ export class AuthService {
   }
 
   // inscription
-  inscrire(donnees: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, donnees).pipe(
+  inscrire(donnees: RegisterRequest): Observable<UserResponse> {
+    return this.http.post<UserResponse>(`${this.apiUrl}/register`, donnees).pipe(
       tap(reponse => {
-        localStorage.setItem('token', reponse.userLogged.token);
-        localStorage.setItem('utilisateur', JSON.stringify(reponse.userLogged.user.username));
-        this.utilisateurConnecte.next(reponse.userLogged.user);
+        console.log('Réponse de connexion:', reponse);
+        localStorage.setItem('token', reponse.userCreated.token);
+        localStorage.setItem('utilisateur', JSON.stringify(reponse.userCreated.user.username));
+        alert(`Bienvenue ${reponse.userCreated.user.username}!`);
+        this.utilisateurConnecte.next(reponse.userCreated.user);
       })
     );
   }

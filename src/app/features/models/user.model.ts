@@ -29,3 +29,10 @@ export interface AuthResponse {
     user: User;
   };
 };
+
+export interface UserResponse {
+  userCreated: {
+    token: string;
+    user: User;
+  }
+};
