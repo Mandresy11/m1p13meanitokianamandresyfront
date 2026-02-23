@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home.component';
 import { ShopsComponent } from './features/shops/shops.component';
+import { ShopDetailComponent } from './features/shops/shop-details/shop-detail.component'; // 🆕
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { EventsComponent } from './features/events/events.component';
 import { authGuard } from './guards/auth-guard';
@@ -13,13 +14,17 @@ export const routes: Routes = [
     component: HomeComponent
   },
 
-  // Page des boutiques
+  // Page des boutiques (liste)
   {
     path: 'boutiques',
     component: ShopsComponent
   },
 
-
+  // 🆕 Page de détail d'une boutique
+  {
+    path: 'boutiques/:id',
+    component: ShopDetailComponent
+  },
 
   // Page des événements
   {
@@ -27,6 +32,7 @@ export const routes: Routes = [
     component: EventsComponent
   },
 
+  // Dashboard admin
   {
     path: 'dashboard',
     component: DashboardComponent,

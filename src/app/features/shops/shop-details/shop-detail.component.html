@@ -1,0 +1,45 @@
+<div class="detail-page">
+
+  <!-- Boutique introuvable -->
+  <div *ngIf="!shop" class="not-found">
+    <div class="not-found-content">
+      <div class="not-found-icon">🏪</div>
+      <h2>Boutique introuvable</h2>
+      <p>Cette boutique n'existe pas.</p>
+      <a routerLink="/boutiques" class="back-link">← Retour aux boutiques</a>
+    </div>
+  </div>
+
+  <!-- Boutique trouvée -->
+  <div *ngIf="shop">
+
+    <!-- HERO -->
+    <div class="shop-hero">
+      <img [src]="shop.coverPhoto" [alt]="shop.name" class="hero-img" />
+      <div class="hero-overlay"></div>
+
+      <a routerLink="/boutiques" class="btn-retour">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Retour
+      </a>
+
+      <div class="hero-content">
+        <img [src]="shop.logo" [alt]="shop.name" class="hero-logo" />
+        <div class="hero-text">
+          <span class="hero-category">
+            {{ avoirIconeCategorie(shop.category) }} {{ shop.category }}
+          </span>
+          <h1 class="hero-title">{{ shop.name }}</h1>
+          <p class="hero-location">📍 {{ shop.location }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORPS (vide pour l'instant) -->
+    <div class="page-body">
+    </div>
+
+  </div>
+</div>

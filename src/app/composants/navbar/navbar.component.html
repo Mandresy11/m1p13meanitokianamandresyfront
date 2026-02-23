@@ -17,9 +17,6 @@
         <a routerLink="/boutiques" routerLinkActive="active" class="nav-link">Boutiques</a>
       </li>
       <li>
-        <a routerLink="/produits" routerLinkActive="active" class="nav-link">Produits</a>
-      </li>
-      <li>
         <a routerLink="/evenements" routerLinkActive="active" class="nav-link">Événements</a>
       </li>
     </ul>
@@ -92,7 +89,6 @@
   <div class="mobile-menu" [class.ouvert]="menuOuvert">
     <a routerLink="/"           class="mobile-link" (click)="menuOuvert = false">Accueil</a>
     <a routerLink="/boutiques"  class="mobile-link" (click)="menuOuvert = false">Boutiques</a>
-    <a routerLink="/produits"   class="mobile-link" (click)="menuOuvert = false">Produits</a>
     <a routerLink="/evenements" class="mobile-link" (click)="menuOuvert = false">Événements</a>
     <div class="mobile-actions">
       <ng-container *ngIf="!utilisateur">
