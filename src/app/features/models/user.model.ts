@@ -24,7 +24,8 @@ export interface RegisterRequest {
 }
 
 export interface AuthResponse {
-  token: string;
-  user: User;
-  message?: string;
-}
+  userLogged: {
+    token: string;
+    user: User;
+  };
+};

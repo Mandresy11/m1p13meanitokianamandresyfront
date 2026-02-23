@@ -25,10 +25,12 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, donnees).pipe(
       tap(reponse => {
         // Sauvegarder le token et l'utilisateur dans localStorage
-        localStorage.setItem('token', reponse.token);
-        localStorage.setItem('utilisateur', JSON.stringify(reponse.user));
+        console.log('Réponse de connexion:', reponse);
+        localStorage.setItem('token', reponse.userLogged.token);
+        localStorage.setItem('utilisateur', JSON.stringify(reponse.userLogged.user.username));
+        alert(`Bienvenue ${reponse.userLogged.user.username}!`);
         // Mettre à jour le BehaviorSubject
-        this.utilisateurConnecte.next(reponse.user);
+        this.utilisateurConnecte.next(reponse.userLogged.user);
       })
     );
   }
@@ -37,9 +39,9 @@ export class AuthService {
   inscrire(donnees: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, donnees).pipe(
       tap(reponse => {
-        localStorage.setItem('token', reponse.token);
-        localStorage.setItem('utilisateur', JSON.stringify(reponse.user));
-        this.utilisateurConnecte.next(reponse.user);
+        localStorage.setItem('token', reponse.userLogged.token);
+        localStorage.setItem('utilisateur', JSON.stringify(reponse.userLogged.user.username));
+        this.utilisateurConnecte.next(reponse.userLogged.user);
       })
     );
   }
