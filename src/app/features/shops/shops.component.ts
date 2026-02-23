@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Shop, ShopCategory } from '../models/shop.model';
+import { Shop, Category } from '../models/shop.model';
+import { ShopService } from './shop.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-shops',
@@ -13,14 +16,17 @@ import { Shop, ShopCategory } from '../models/shop.model';
 })
 export class ShopsComponent implements OnInit {
 
+  constructor(private shopService: ShopService, private router: Router) {}
+
   // Toutes nos boutiques
   shops: Shop[] = [];
+  apiUrl = environment.apiUrl;
 
   // Les boutiques qu'on affiche après avoir filtré
   boutiquesAffichees: Shop[] = [];
 
   // La liste de toutes les catégories possibles
-  categories = Object.values(ShopCategory);
+  categories = Object.values(Category);
 
   // Quelle catégorie l'utilisateur a choisi
   categorieChoisie: string = 'tout';
@@ -35,6 +41,16 @@ export class ShopsComponent implements OnInit {
 
   // Charger toutes les boutiques (pour l'instant c'est du fake, plus tard ça viendra de l'API)
   chargerLesBoutiques(): void {
+  this.shopService.chargerLesBoutiques().subscribe(data => {
+    this.shops = data.map(shop => ({
+      ...shop,
+      logo: shop.logo ? this.apiUrl + shop.logo : undefined,
+      coverPhoto: shop.coverPhoto ? this.apiUrl + shop.coverPhoto : undefined
+    }))
+    console.log(this.shops[0]?.logo)
+    console.log(data);
+  });
+    /*
     this.shops = [
       {
         _id: '1',
@@ -108,10 +124,10 @@ export class ShopsComponent implements OnInit {
         logo: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=200',
         coverPhoto: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=800'
       }
-    ];
+    ];*/
 
     // Au début on affiche toutes les boutiques
-    this.boutiquesAffichees = [...this.shops];
+
   }
 
   // Quand l'utilisateur clique sur une catégorie

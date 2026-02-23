@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment.development';
 })
 export class AuthService {
 
-  private apiUrl = environment.apiUrl + '/auth';
+  private apiUrl = environment.apiUrl + '/api/auth';
 
   private utilisateurConnecte = new BehaviorSubject<User | null>(
     this.recupererUtilisateurLocal()

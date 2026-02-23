@@ -10,8 +10,7 @@ export const adminGuard: CanActivateFn = () => {
   if (authService.estConnecte() && authService.estAdmin()) {
     return true;
   }
-
-  // Not logged in or not admin → redirect
-  router.navigate(['/login']);
+  // redirect to home if not admin
+  router.navigate(['/']);
   return false;
 };
