@@ -88,12 +88,12 @@
         <button
           *ngFor="let cat of categories"
           class="category-pill"
-          [class.active]="categorieChoisie === cat"
-          (click)="filtrerParCategorie(cat)"
+          [class.active]="categorieChoisie === cat._id"
+          (click)="filtrerParCategorie(cat._id)"
         >
-          <span class="pill-icon">{{ avoirIconeCategorie(cat) }}</span>
-          <span class="pill-text">{{ cat }}</span>
-          <span class="pill-count">{{ combienDansCetteCategorie(cat) }}</span>
+          <span class="pill-icon">{{ cat.icon }}</span>
+          <span class="pill-text">{{ cat.name }}</span>
+          <span class="pill-count">{{ combienDansCetteCategorie(cat._id) }}</span>
         </button>
 
       </div>
@@ -131,8 +131,8 @@
             <div class="image-overlay"></div>
 
             <div class="category-badge">
-              <span class="badge-icon">{{ avoirIconeCategorie(boutique.category) }}</span>
-              <span class="badge-label">{{ boutique.category }}</span>
+              <span class="badge-icon">{{ avoirIconeCategorie(boutique.category._id) }}</span>
+              <span class="badge-label">{{ boutique.category.name }}</span>
             </div>
 
             <div class="shop-logo-container">

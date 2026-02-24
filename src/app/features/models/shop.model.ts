@@ -6,7 +6,12 @@ export interface Shop {
     level: number;
     section: string;
   };
-  category: string;
+  category: {
+    _id: string,
+    name: string,
+    icon: string,
+    description: string;
+  };
   logo?: string;
   coverPhoto?: string;
   openingHours?: {
@@ -16,11 +21,9 @@ export interface Shop {
   }[];
 }
 
-export enum Category {
-  MODE = 'Mode & Vêtements',
-  ELECTRONIQUE = 'Électronique',
-  RESTAURATION = 'Restauration',
-  BEAUTE = 'Beauté & Cosmétiques',
-  SPORT = 'Sports & Loisirs',
-  AUTRE = 'Autre'
+export interface Category {
+  _id: string;
+  name: string;
+  icon: string;
+  description?: string;
 }

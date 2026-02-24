@@ -26,7 +26,7 @@ export class ShopsComponent implements OnInit {
   boutiquesAffichees: Shop[] = [];
 
   // La liste de toutes les catégories possibles
-  categories = Object.values(Category);
+  categories: Category[] = [];
 
   // Quelle catégorie l'utilisateur a choisi
   categorieChoisie: string = 'tout';
@@ -35,8 +35,27 @@ export class ShopsComponent implements OnInit {
   recherche: string = '';
 
   ngOnInit(): void {
-    // Au démarrage, on charge les boutiques
+    // Au démarrage, on charge les boutiques et catégories
     this.chargerLesBoutiques();
+    this.chargerLesCategories();
+  }
+
+  chargerLesCategories(): void {
+    this.shopService.chargerLesCategories().subscribe((data: any) => {
+      // Normalize different possible API shapes:
+      // - Array<Category>
+      // - { categories: Category[] }
+      // - { id1: Category, id2: Category }
+      if (Array.isArray(data)) {
+        this.categories = data;
+      } else if (data && Array.isArray(data.categories)) {
+        this.categories = data.categories;
+      } else if (data && typeof data === 'object') {
+        this.categories = Object.values(data);
+      } else {
+        this.categories = [];
+      }
+    });
   }
 
   // Charger toutes les boutiques (pour l'instant c'est du fake, plus tard ça viendra de l'API)
@@ -49,6 +68,8 @@ export class ShopsComponent implements OnInit {
     }))
     console.log(this.shops[0]?.logo)
     console.log(data);
+    // Display all shops by default
+    this.boutiquesAffichees = [...this.shops];
   });
     /*
     this.shops = [
@@ -147,9 +168,9 @@ export class ShopsComponent implements OnInit {
     this.boutiquesAffichees = this.shops.filter(boutique => {
 
       // Est-ce que la boutique correspond à la catégorie choisie ?
-      let bonneCategorie =
-        this.categorieChoisie === 'tout' ||
-        boutique.category === this.categorieChoisie;
+      let bonneCategorie = this.categorieChoisie === 'tout' ||
+        // If category objects include _id use that, otherwise fall back to name
+        (boutique.category && ((boutique.category as any)._id ? (boutique.category as any)._id === this.categorieChoisie : boutique.category.name === this.categorieChoisie));
 
       // Est-ce que le nom ou la description contient ce qu'on cherche ?
       let correspondRecherche =
@@ -171,8 +192,12 @@ export class ShopsComponent implements OnInit {
 
   // Retourner l'emoji qui correspond à une catégorie
   avoirIconeCategorie(categorie: string): string {
-    // On fait un petit dictionnaire des icônes
-    let icones: any = {
+    // Try to resolve icon from loaded categories (by _id or name)
+    const trouvé = this.categories.find(c => c._id === categorie || c.name === categorie);
+    if (trouvé && trouvé.icon) return trouvé.icon;
+
+    // Fallback dictionary when categories not yet loaded or unknown
+    const icones: any = {
       'Mode & Vêtements': '👔',
       'Électronique': '📱',
       'Restauration': '🍽️',
@@ -181,8 +206,6 @@ export class ShopsComponent implements OnInit {
       'Autre': '🏪'
     };
 
-    // Si la catégorie existe dans notre dictionnaire, on retourne l'icône
-    // Sinon on retourne une icône par défaut
     return icones[categorie] || '🏪';
   }
 
@@ -193,7 +216,7 @@ export class ShopsComponent implements OnInit {
     // On parcourt toutes les boutiques
     for (let boutique of this.shops) {
       // Si la boutique est dans cette catégorie, on ajoute 1 au compteur
-      if (boutique.category === categorie) {
+      if ((boutique.category as any)._id === categorie || boutique.category.name === categorie) {
         compteur++;
       }
     }
