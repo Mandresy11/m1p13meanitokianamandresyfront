@@ -1,0 +1,144 @@
+<div class="detail-page">
+
+  <!-- Événement introuvable -->
+  <div *ngIf="!event" class="not-found">
+    <div class="not-found-content">
+      <div class="not-found-icon">📅</div>
+      <h2>Événement introuvable</h2>
+      <p>Cet événement n'existe pas ou a été annulé.</p>
+      <a routerLink="/evenements" class="back-link">← Retour aux événements</a>
+    </div>
+  </div>
+
+  <!-- Événement trouvé -->
+  <div *ngIf="event">
+
+    <!-- HERO -->
+    <div class="event-hero">
+      <img [src]="event.image" [alt]="event.title" class="hero-img" />
+      <div class="hero-overlay"></div>
+
+      <a routerLink="/evenements" class="btn-retour">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Retour
+      </a>
+
+      <div class="hero-badge-free" *ngIf="event.isFree">
+        <span>✅ Entrée gratuite</span>
+      </div>
+
+      <div class="hero-date-badge">
+        <div class="date-day">{{ getJour(event.date) }}</div>
+        <div class="date-month">{{ getMoisAbbr(event.date) }}</div>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-text">
+          <span class="hero-category">
+            {{ getCategorieIcone(event.category) }} {{ event.category }}
+          </span>
+          <h1 class="hero-title">{{ event.title }}</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- CORPS -->
+    <div class="page-body">
+
+      <!-- Card Description -->
+      <div class="card">
+        <h2 class="card-title"><span>📋</span> À propos de l'événement</h2>
+        <p class="card-text">{{ event.description }}</p>
+      </div>
+
+      <!-- Card Infos pratiques -->
+      <div class="card infos-card">
+        <h2 class="card-title"><span>📌</span> Informations pratiques</h2>
+        <div class="infos-grid">
+          <div class="info-item">
+            <div class="info-icon-wrap purple">📅</div>
+            <div>
+              <div class="info-label">Date</div>
+              <div class="info-value">{{ formaterDate(event.date) }}</div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon-wrap blue">🕐</div>
+            <div>
+              <div class="info-label">Heure</div>
+              <div class="info-value">{{ event.time }}</div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon-wrap pink">📍</div>
+            <div>
+              <div class="info-label">Lieu</div>
+              <div class="info-value">{{ event.location }}</div>
+            </div>
+          </div>
+          <div class="info-item">
+            <div class="info-icon-wrap green">🎟️</div>
+            <div>
+              <div class="info-label">Tarif</div>
+              <div class="info-value" [class.gratuit]="event.isFree">
+                {{ event.isFree ? 'Entrée gratuite' : formaterPrix(event.price!) }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--  Bouton de réservation -->
+      <div class="card reservation-card">
+        <div class="reservation-content">
+          <div class="reservation-text">
+            <h3>{{ event.isFree ? 'Réservez votre place gratuite' : 'Réservez votre billet' }}</h3>
+            <p>{{ event.isFree ? 'Places limitées — réservez dès maintenant !' : 'Tarif : ' + formaterPrix(event.price!) + ' par personne' }}</p>
+          </div>
+          <button class="btn-reserver">
+            <span>🎟️</span>
+            {{ event.isFree ? 'Réserver gratuitement' : 'Acheter un billet' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Événements similaires -->
+      <section class="similaires-section" *ngIf="evenementsSimilaires.length > 0">
+
+        <div class="section-header">
+          <h2 class="section-title">Autres événements</h2>
+          <a routerLink="/evenements" class="voir-tous">Voir tous →</a>
+        </div>
+
+        <div class="similaires-grid">
+          <div class="sim-card" *ngFor="let sim of evenementsSimilaires">
+
+            <div class="sim-img-wrapper">
+              <img [src]="sim.image" [alt]="sim.title" class="sim-img" loading="lazy" />
+              <div class="sim-overlay"></div>
+              <span class="sim-date-badge">
+                {{ getJour(sim.date) }} {{ getMoisAbbr(sim.date) }}
+              </span>
+              <span class="sim-badge-free" *ngIf="sim.isFree">Gratuit</span>
+            </div>
+
+            <div class="sim-body">
+              <div class="sim-category">{{ getCategorieIcone(sim.category) }} {{ sim.category }}</div>
+              <h3 class="sim-title">{{ sim.title }}</h3>
+              <div class="sim-footer">
+                <span class="sim-prix" [class.gratuit]="sim.isFree">
+                  {{ sim.isFree ? 'Gratuit' : formaterPrix(sim.price!) }}
+                </span>
+                <a [routerLink]="['/evenements', sim._id]" class="sim-btn">Voir →</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>

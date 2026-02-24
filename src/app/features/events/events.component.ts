@@ -7,32 +7,21 @@ import { Event, EventCategory } from '../models/event.model';
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule], // RouterLink ajouté
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
 
-  // Liste de tous les événements
   evenements: Event[] = [];
-
-  // Liste filtrée pour l'affichage
   evenementsAffiches: Event[] = [];
-
-  // Toutes les catégories
   categories = Object.values(EventCategory);
-
-  // Catégorie sélectionnée
   categorieChoisie: string = 'tous';
-
-  // Texte de recherche
   recherche: string = '';
 
   ngOnInit(): void {
-    // Charger les événements au démarrage
     this.chargerLesEvenements();
   }
-
 
   chargerLesEvenements(): void {
     this.evenements = [
@@ -130,67 +119,47 @@ export class EventsComponent implements OnInit {
         isFree: false
       }
     ];
-
-    // Au début on affiche tout
     this.evenementsAffiches = [...this.evenements];
   }
 
-  // Filtrer par catégorie
   filtrerParCategorie(categorie: string): void {
     this.categorieChoisie = categorie;
     this.appliquerLesFiltres();
   }
 
-  // Quand l'utilisateur tape dans la recherche
   quandOnCherche(event: any): void {
     this.recherche = event.target.value;
     this.appliquerLesFiltres();
   }
 
-  // Appliquer tous les filtres
   appliquerLesFiltres(): void {
     this.evenementsAffiches = this.evenements.filter(event => {
-
-      const bonneCategorie =
-        this.categorieChoisie === 'tous' ||
-        event.category === this.categorieChoisie;
-
-      const correspondRecherche =
-        this.recherche === '' ||
+      const bonneCategorie = this.categorieChoisie === 'tous' || event.category === this.categorieChoisie;
+      const correspondRecherche = this.recherche === '' ||
         event.title.toLowerCase().includes(this.recherche.toLowerCase()) ||
         event.description.toLowerCase().includes(this.recherche.toLowerCase());
-
       return bonneCategorie && correspondRecherche;
     });
   }
 
-  // Réinitialiser les filtres
   toutReinitialiser(): void {
     this.categorieChoisie = 'tous';
     this.recherche = '';
     this.evenementsAffiches = [...this.evenements];
   }
 
-  // Compter les événements par catégorie
   combienDansCetteCategorie(categorie: string): number {
     return this.evenements.filter(e => e.category === categorie).length;
   }
 
-  // Formater la date
   formaterDate(dateStr: string): string {
     const date = new Date(dateStr);
-    const options: Intl.DateTimeFormatOptions = {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    };
-    return date.toLocaleDateString('fr-FR', options);
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
   getMoisAbbr(dateStr: string): string {
     const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-    const index = parseInt(dateStr.split('-')[1], 10) - 1;
-    return mois[index] ?? '';
+    return mois[parseInt(dateStr.split('-')[1], 10) - 1] ?? '';
   }
 
   getJour(dateStr: string): string {
