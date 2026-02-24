@@ -18,7 +18,6 @@
       <img [src]="event.image" [alt]="event.title" class="hero-img" />
       <div class="hero-overlay"></div>
 
-      <!-- Bouton retour -->
       <a routerLink="/evenements" class="btn-retour">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -26,18 +25,15 @@
         Retour
       </a>
 
-      <!-- Badge gratuit -->
       <div class="hero-badge-free" *ngIf="event.isFree">
         <span>✅ Entrée gratuite</span>
       </div>
 
-      <!-- Date badge -->
       <div class="hero-date-badge">
         <div class="date-day">{{ getJour(event.date) }}</div>
         <div class="date-month">{{ getMoisAbbr(event.date) }}</div>
       </div>
 
-      <!-- Titre-->
       <div class="hero-content">
         <div class="hero-text">
           <span class="hero-category">
@@ -48,9 +44,59 @@
       </div>
     </div>
 
-    <!-- CORPS-->
+    <!-- CORPS -->
     <div class="page-body">
-    </div>
 
+      <!--Card Description -->
+      <div class="card">
+        <h2 class="card-title"><span>📋</span> À propos de l'événement</h2>
+        <p class="card-text">{{ event.description }}</p>
+      </div>
+
+      <!-- Card Infos pratiques : date / heure / lieu / prix -->
+      <div class="card infos-card">
+
+        <h2 class="card-title"><span>📌</span> Informations pratiques</h2>
+
+        <div class="infos-grid">
+
+          <div class="info-item">
+            <div class="info-icon-wrap purple">📅</div>
+            <div>
+              <div class="info-label">Date</div>
+              <div class="info-value">{{ formaterDate(event.date) }}</div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon-wrap blue">🕐</div>
+            <div>
+              <div class="info-label">Heure</div>
+              <div class="info-value">{{ event.time }}</div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon-wrap pink">📍</div>
+            <div>
+              <div class="info-label">Lieu</div>
+              <div class="info-value">{{ event.location }}</div>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-icon-wrap green">🎟️</div>
+            <div>
+              <div class="info-label">Tarif</div>
+              <div class="info-value" [class.gratuit]="event.isFree">
+                {{ event.isFree ? 'Entrée gratuite' : formaterPrix(event.price!) }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 </div>

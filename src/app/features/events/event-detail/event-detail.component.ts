@@ -29,107 +29,68 @@ export class EventDetailComponent implements OnInit {
 
   private tousLesEvenements: EventDetail[] = [
     {
-      _id: '1',
-      title: 'Soirée DJ - Summer Vibes',
+      _id: '1', title: 'Soirée DJ - Summer Vibes',
       description: 'Soirée musicale avec les meilleurs DJs de la capitale. Une nuit inoubliable vous attend avec des sets électroniques et house music jusqu\'au bout de la nuit.',
-      date: '2026-02-28',
-      time: '20h00',
-      location: 'Espace événementiel - Niveau 3',
-      category: 'Concert',
-      image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200',
-      price: 15000,
-      isFree: false
+      date: '2026-02-28', time: '20h00', location: 'Espace événementiel - Niveau 3',
+      category: 'Concert', image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200',
+      price: 15000, isFree: false
     },
     {
-      _id: '2',
-      title: 'Exposition Art Contemporain',
+      _id: '2', title: 'Exposition Art Contemporain',
       description: 'Découvrez les œuvres d\'artistes locaux talentueux. Peintures, sculptures et installations numériques exposées dans notre galerie pendant tout le mois de mars.',
-      date: '2026-03-01',
-      time: '10h00',
-      location: 'Galerie d\'art - Niveau 2',
-      category: 'Exposition',
-      image: 'https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?w=1200',
+      date: '2026-03-01', time: '10h00', location: 'Galerie d\'art - Niveau 2',
+      category: 'Exposition', image: 'https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?w=1200',
       isFree: true
     },
     {
-      _id: '3',
-      title: 'Défilé de Mode - Printemps 2026',
+      _id: '3', title: 'Défilé de Mode - Printemps 2026',
       description: 'Présentation des nouvelles collections printemps-été par les boutiques du MegaMall. Venez découvrir les dernières tendances mode en avant-première.',
-      date: '2026-03-05',
-      time: '18h00',
-      location: 'Scène centrale - Niveau 1',
-      category: 'Défilé de mode',
-      image: 'https://images.unsplash.com/photo-1558769132-cb1aea1f5140?w=1200',
-      price: 25000,
-      isFree: false
+      date: '2026-03-05', time: '18h00', location: 'Scène centrale - Niveau 1',
+      category: 'Défilé de mode', image: 'https://images.unsplash.com/photo-1558769132-cb1aea1f5140?w=1200',
+      price: 25000, isFree: false
     },
     {
-      _id: '4',
-      title: 'Ventes Privées - Mode & Accessoires',
+      _id: '4', title: 'Ventes Privées - Mode & Accessoires',
       description: 'Jusqu\'à -70% sur une sélection d\'articles mode et accessoires. Réservé aux membres premium du MegaMall. Inscription gratuite sur place.',
-      date: '2026-03-10',
-      time: '09h00',
-      location: 'Toutes les boutiques Mode',
-      category: 'Vente privée',
-      image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200',
+      date: '2026-03-10', time: '09h00', location: 'Toutes les boutiques Mode',
+      category: 'Vente privée', image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200',
       isFree: true
     },
     {
-      _id: '5',
-      title: 'Animation Enfants - Magie & Cirque',
+      _id: '5', title: 'Animation Enfants - Magie & Cirque',
       description: 'Spectacle de magie et numéros de cirque pour émerveiller les enfants. Jongleurs, magiciens et clowns seront au rendez-vous pour un après-midi magique.',
-      date: '2026-03-15',
-      time: '14h00',
-      location: 'Espace enfants - Niveau 2',
-      category: 'Animation',
-      image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=1200',
+      date: '2026-03-15', time: '14h00', location: 'Espace enfants - Niveau 2',
+      category: 'Animation', image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=1200',
       isFree: true
     },
     {
-      _id: '6',
-      title: 'Concert Acoustique - Jazz Night',
+      _id: '6', title: 'Concert Acoustique - Jazz Night',
       description: 'Soirée jazz avec des musiciens internationaux dans une ambiance feutrée et élégante. Réservation conseillée, places limitées à 200 personnes.',
-      date: '2026-03-20',
-      time: '19h30',
-      location: 'Food Court - Niveau 3',
-      category: 'Concert',
-      image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=1200',
-      price: 20000,
-      isFree: false
+      date: '2026-03-20', time: '19h30', location: 'Food Court - Niveau 3',
+      category: 'Concert', image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=1200',
+      price: 20000, isFree: false
     },
     {
-      _id: '7',
-      title: 'Spectacle de Danse - Urban Dance',
+      _id: '7', title: 'Spectacle de Danse - Urban Dance',
       description: 'Compétition de danse hip-hop et breakdance ouverte à tous les âges. 12 équipes s\'affrontent pour le titre de champion du MegaMall 2026.',
-      date: '2026-03-25',
-      time: '16h00',
-      location: 'Scène centrale - Niveau 1',
-      category: 'Spectacle',
-      image: 'https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=1200',
-      price: 10000,
-      isFree: false
+      date: '2026-03-25', time: '16h00', location: 'Scène centrale - Niveau 1',
+      category: 'Spectacle', image: 'https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=1200',
+      price: 10000, isFree: false
     },
     {
-      _id: '8',
-      title: 'Atelier Cuisine - Chef Invité',
+      _id: '8', title: 'Atelier Cuisine - Chef Invité',
       description: 'Cours de cuisine avec un chef étoilé. Apprenez à réaliser 3 recettes gastronomiques. Matériel et ingrédients fournis. Tablier offert aux participants.',
-      date: '2026-03-30',
-      time: '11h00',
-      location: 'Gourmet Palace - Niveau 3',
-      category: 'Autre',
-      image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200',
-      price: 30000,
-      isFree: false
+      date: '2026-03-30', time: '11h00', location: 'Gourmet Palace - Niveau 3',
+      category: 'Autre', image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200',
+      price: 30000, isFree: false
     }
   ];
 
   constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    // Lire l'ID dans l'URL
     this.eventId = this.route.snapshot.paramMap.get('id') || '';
-    // Trouver l'événement correspondant
-    this.event = this.tousLesEvenements.find(e => e._id === this.eventId) || null;
+    this.event   = this.tousLesEvenements.find(e => e._id === this.eventId) || null;
   }
 
   formaterDate(dateStr: string): string {
@@ -148,14 +109,14 @@ export class EventDetailComponent implements OnInit {
 
   getCategorieIcone(categorie: string): string {
     const icones: any = {
-      'Concert':       '🎵',
-      'Exposition':    '🎨',
-      'Défilé de mode':'👗',
-      'Vente privée':  '🛍️',
-      'Animation':     '🎪',
-      'Spectacle':     '🎭',
-      'Autre':         '📅'
+      'Concert': '🎵', 'Exposition': '🎨', 'Défilé de mode': '👗',
+      'Vente privée': '🛍️', 'Animation': '🎪', 'Spectacle': '🎭', 'Autre': '📅'
     };
     return icones[categorie] || '📅';
+  }
+
+  // 🆕 Formater le prix en Ariary
+  formaterPrix(prix: number): string {
+    return prix.toLocaleString('fr-FR') + ' Ar';
   }
 }
