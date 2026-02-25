@@ -1,8 +1,12 @@
+import { ShopService } from './../shops/shop.service';
+import { ChangeDetectorRef } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Event, EventCategory } from '../models/event.model';
+import { EventsService } from './events.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-events',
@@ -12,10 +16,15 @@ import { Event, EventCategory } from '../models/event.model';
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
+  constructor(
+    private eventsService: EventsService,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
+  apiUrl = environment.apiUrl;
   evenements: Event[] = [];
   evenementsAffiches: Event[] = [];
-  categories = Object.values(EventCategory);
+  categories: EventCategory[] = [];
   categorieChoisie: string = 'tous';
   recherche: string = '';
 
@@ -24,13 +33,35 @@ export class EventsComponent implements OnInit {
   }
 
   chargerLesEvenements(): void {
-    this.evenements = [
+    this.eventsService.chargerLesEvenements().subscribe({
+      next: (data) => {
+        console.log(data)
+        this.evenements = data.map(event => ({
+          ...event,
+          image: event.image ? `${this.apiUrl}${event.image}` : undefined,
+          eventDateTime: new Date(event.eventDateTime)
+        }));
+        const uniqueCategoriesMap = new Map();
+        this.evenements.forEach(event => {
+          if (event.category?._id) {
+            uniqueCategoriesMap.set(event.category._id, event.category);
+          }
+        })
+        this.categories = Array.from(uniqueCategoriesMap.values());
+        this.categorieChoisie = 'tous';
+        this.evenementsAffiches = [...this.evenements];
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    })
+    /*this.evenements = [
       {
         _id: '1',
         title: 'Soirée DJ - Summer Vibes',
         description: 'Soirée musicale avec les meilleurs DJs de la capitale',
-        date: '2026-02-28',
-        time: '20h00',
+        eventDateTime: new Date('2026-03-01T20:00:00'),
         location: 'Espace événementiel - Niveau 3',
         category: 'Concert',
         image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800',
@@ -41,8 +72,7 @@ export class EventsComponent implements OnInit {
         _id: '2',
         title: 'Exposition Art Contemporain',
         description: 'Découvrez les œuvres d\'artistes locaux talentueux',
-        date: '2026-03-01',
-        time: '10h00',
+        eventDateTime: new Date('2026-03-01T10:00:00'),
         location: 'Galerie d\'art - Niveau 2',
         category: 'Exposition',
         image: 'https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?w=800',
@@ -52,8 +82,7 @@ export class EventsComponent implements OnInit {
         _id: '3',
         title: 'Défilé de Mode - Printemps 2026',
         description: 'Présentation des nouvelles collections printemps-été',
-        date: '2026-03-05',
-        time: '18h00',
+        eventDateTime: new Date('2026-03-05T18:00:00'),
         location: 'Scène centrale - Niveau 1',
         category: 'Défilé de mode',
         image: 'https://images.unsplash.com/photo-1558769132-cb1aea1f5140?w=800',
@@ -64,8 +93,7 @@ export class EventsComponent implements OnInit {
         _id: '4',
         title: 'Ventes Privées - Mode & Accessoires',
         description: 'Jusqu\'à -70% sur une sélection d\'articles',
-        date: '2026-03-10',
-        time: '09h00',
+        eventDateTime: new Date('2026-03-10T09:00:00'),
         location: 'Toutes les boutiques Mode',
         category: 'Vente privée',
         image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=800',
@@ -75,8 +103,7 @@ export class EventsComponent implements OnInit {
         _id: '5',
         title: 'Animation Enfants - Magie & Cirque',
         description: 'Spectacle de magie et numéros de cirque pour les enfants',
-        date: '2026-03-15',
-        time: '14h00',
+        eventDateTime: new Date('2026-03-15T14:00:00'),
         location: 'Espace enfants - Niveau 2',
         category: 'Animation',
         image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800',
@@ -86,8 +113,7 @@ export class EventsComponent implements OnInit {
         _id: '6',
         title: 'Concert Acoustique - Jazz Night',
         description: 'Soirée jazz avec des musiciens internationaux',
-        date: '2026-03-20',
-        time: '19h30',
+        eventDateTime: new Date('2026-03-20T20:00:00'),
         location: 'Food Court - Niveau 3',
         category: 'Concert',
         image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=800',
@@ -98,8 +124,7 @@ export class EventsComponent implements OnInit {
         _id: '7',
         title: 'Spectacle de Danse - Urban Dance',
         description: 'Compétition de danse hip-hop et breakdance',
-        date: '2026-03-25',
-        time: '16h00',
+        eventDateTime: new Date('2026-03-25T19:00:00'),
         location: 'Scène centrale - Niveau 1',
         category: 'Spectacle',
         image: 'https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=800',
@@ -110,15 +135,14 @@ export class EventsComponent implements OnInit {
         _id: '8',
         title: 'Atelier Cuisine - Chef Invité',
         description: 'Cours de cuisine avec un chef étoilé',
-        date: '2026-03-30',
-        time: '11h00',
+        eventDateTime: new Date('2026-03-30T11:00:00'),
         location: 'Gourmet Palace - Niveau 3',
         category: 'Autre',
         image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800',
         price: 30000,
         isFree: false
       }
-    ];
+    ];*/
     this.evenementsAffiches = [...this.evenements];
   }
 
@@ -133,14 +157,32 @@ export class EventsComponent implements OnInit {
   }
 
   appliquerLesFiltres(): void {
-    this.evenementsAffiches = this.evenements.filter(event => {
-      const bonneCategorie = this.categorieChoisie === 'tous' || event.category === this.categorieChoisie;
-      const correspondRecherche = this.recherche === '' ||
-        event.title.toLowerCase().includes(this.recherche.toLowerCase()) ||
-        event.description.toLowerCase().includes(this.recherche.toLowerCase());
-      return bonneCategorie && correspondRecherche;
-    });
-  }
+  this.evenementsAffiches = this.evenements.filter(event => {
+
+    const catVal: any = event?.category ?? null;
+    let eventCatIdentifier: string | null = null;
+
+    // If category is just an ID string
+    if (typeof catVal === 'string') {
+      eventCatIdentifier = catVal;
+    }
+    // If category is a populated object
+    else if (typeof catVal === 'object' && catVal !== null) {
+      eventCatIdentifier = catVal._id ?? catVal.name;
+    }
+
+    const bonneCategorie =
+      this.categorieChoisie === 'tous' ||
+      eventCatIdentifier === this.categorieChoisie;
+
+    const correspondRecherche =
+      this.recherche === '' ||
+      event.title.toLowerCase().includes(this.recherche.toLowerCase()) ||
+      event.description.toLowerCase().includes(this.recherche.toLowerCase());
+
+    return bonneCategorie && correspondRecherche;
+  });
+}
 
   toutReinitialiser(): void {
     this.categorieChoisie = 'tous';
@@ -149,20 +191,24 @@ export class EventsComponent implements OnInit {
   }
 
   combienDansCetteCategorie(categorie: string): number {
-    return this.evenements.filter(e => e.category === categorie).length;
+    return this.evenements.filter(e =>
+      (e.category as any)._id === categorie || e.category.name === categorie
+    ).length;
   }
 
-  formaterDate(dateStr: string): string {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  formaterDate(date: Date): string {
+    return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  getMoisAbbr(dateStr: string): string {
+  formaterHeure(date: Date): string {
+    return new Date(date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+  getJour(date: Date): string {
+    return new Date(date).getDate().toString().padStart(2, '0');
+  }
+
+  getMoisAbbr(date: Date): string {
     const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-    return mois[parseInt(dateStr.split('-')[1], 10) - 1] ?? '';
-  }
-
-  getJour(dateStr: string): string {
-    return dateStr.split('-')[2];
+    return mois[new Date(date).getMonth()];
   }
 }

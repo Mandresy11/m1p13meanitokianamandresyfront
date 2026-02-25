@@ -68,10 +68,10 @@
           <button
             *ngFor="let cat of categories"
             class="category-pill"
-            [class.active]="categorieChoisie === cat"
-            (click)="filtrerParCategorie(cat)"
+            [class.active]="categorieChoisie === cat._id"
+            (click)="filtrerParCategorie(cat._id)"
           >
-            {{ cat }} <span class="pill-count">{{ combienDansCetteCategorie(cat) }}</span>
+            {{ cat.name }} <span class="pill-count">{{ combienDansCetteCategorie(cat._id) }}</span>
           </button>
         </div>
 
@@ -126,13 +126,13 @@
           </div>
 
           <div class="date-badge">
-            <div class="date-day">{{ getJour(event.date) }}</div>
-            <div class="date-month">{{ getMoisAbbr(event.date) }}</div>
+            <div class="date-day">{{ getJour(event.eventDateTime) }}</div>
+            <div class="date-month">{{ getMoisAbbr(event.eventDateTime) }}</div>
           </div>
 
           <div class="event-content">
 
-            <div class="event-category">{{ event.category }}</div>
+            <div class="event-category">{{ event.category.name }}</div>
             <h3 class="event-title">{{ event.title }}</h3>
 
             <div class="event-meta">
@@ -140,14 +140,14 @@
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                {{ event.time }}
+                {{ formaterHeure(event.eventDateTime) }}
               </div>
               <div class="info-item">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                 </svg>
-                {{ event.location }}
+                {{ event.shop.name }} - Niveau {{ event.shop.location.level}}, Section {{ event.shop.location.section }}
               </div>
             </div>
 

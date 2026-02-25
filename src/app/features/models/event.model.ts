@@ -2,21 +2,28 @@ export interface Event {
   _id: string;
   title: string;
   description: string;
-  date: string;
-  time: string;
+  eventDateTime: Date;
+  shop: {
+    _id: string;
+    name: string;
+    location: {
+      level: number;
+      section: string;
+    };
+  };
   location: string;
-  category: string;
+  category: {
+    _id: string,
+    name: string,
+    description: string;
+  };
   image?: string;
   price?: number;
   isFree: boolean;
 }
 
-export enum EventCategory {
-  CONCERT = 'Concert',
-  EXPOSITION = 'Exposition',
-  FASHION = 'Défilé de mode',
-  VENTE_PRIVEE = 'Vente privée',
-  ANIMATION = 'Animation',
-  SPECTACLE = 'Spectacle',
-  AUTRE = 'Autre'
-}
+export interface EventCategory {
+    _id: string;
+    name: string;
+    description?: string;
+  }
