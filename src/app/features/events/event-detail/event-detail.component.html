@@ -30,14 +30,14 @@
       </div>
 
       <div class="hero-date-badge">
-        <div class="date-day">{{ getJour(event.date) }}</div>
-        <div class="date-month">{{ getMoisAbbr(event.date) }}</div>
+        <div class="date-day">{{ getJour(event.eventDateTime) }}</div>
+        <div class="date-month">{{ getMoisAbbr(event.eventDateTime) }}</div>
       </div>
 
       <div class="hero-content">
         <div class="hero-text">
           <span class="hero-category">
-            {{ getCategorieIcone(event.category) }} {{ event.category }}
+            {{ event.category.name }}
           </span>
           <h1 class="hero-title">{{ event.title }}</h1>
         </div>
@@ -61,21 +61,21 @@
             <div class="info-icon-wrap purple">📅</div>
             <div>
               <div class="info-label">Date</div>
-              <div class="info-value">{{ formaterDate(event.date) }}</div>
+              <div class="info-value">{{ formaterDate(event.eventDateTime) }}</div>
             </div>
           </div>
           <div class="info-item">
             <div class="info-icon-wrap blue">🕐</div>
             <div>
               <div class="info-label">Heure</div>
-              <div class="info-value">{{ event.time }}</div>
+              <div class="info-value">{{ formaterHeure(event.eventDateTime) }}</div>
             </div>
           </div>
           <div class="info-item">
             <div class="info-icon-wrap pink">📍</div>
             <div>
               <div class="info-label">Lieu</div>
-              <div class="info-value">{{ event.location }}</div>
+              <div class="info-value">{{ event.shop.name }} - Niveau {{ event.shop.location.level}}, Section {{ event.shop.location.section }}</div>
             </div>
           </div>
           <div class="info-item">
@@ -119,13 +119,13 @@
               <img [src]="sim.image" [alt]="sim.title" class="sim-img" loading="lazy" />
               <div class="sim-overlay"></div>
               <span class="sim-date-badge">
-                {{ getJour(sim.date) }} {{ getMoisAbbr(sim.date) }}
+                {{ getJour(sim.eventDateTime) }} {{ getMoisAbbr(sim.eventDateTime) }}
               </span>
               <span class="sim-badge-free" *ngIf="sim.isFree">Gratuit</span>
             </div>
 
             <div class="sim-body">
-              <div class="sim-category">{{ getCategorieIcone(sim.category) }} {{ sim.category }}</div>
+              <div class="sim-category"> {{ sim.category.name }}</div>
               <h3 class="sim-title">{{ sim.title }}</h3>
               <div class="sim-footer">
                 <span class="sim-prix" [class.gratuit]="sim.isFree">

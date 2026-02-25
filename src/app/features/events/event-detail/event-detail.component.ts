@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Event } from '../../models/event.model';
+import { environment } from '../../../../environments/environment.development';
+import { EventsService } from '../events.service';
 import { CommonModule } from '@angular/common';
-import { RouterLink, ActivatedRoute } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 
 interface EventDetail {
   _id: string;
@@ -24,103 +27,87 @@ interface EventDetail {
 })
 export class EventDetailComponent implements OnInit {
 
-  eventId: string = '';
-  event: EventDetail | null = null;
-  evenementsSimilaires: EventDetail[] = []; // 🆕
+  apiUrl = environment.apiUrl;
+  isLoading = true;
+  notFound = false;
+  event: Event | null = null;
+  evenementsSimilaires: Event[] = []; // 🆕
 
-  private tousLesEvenements: EventDetail[] = [
-    {
-      _id: '1', title: 'Soirée DJ - Summer Vibes',
-      description: 'Soirée musicale avec les meilleurs DJs de la capitale. Une nuit inoubliable vous attend avec des sets électroniques et house music jusqu\'au bout de la nuit.',
-      date: '2026-02-28', time: '20h00', location: 'Espace événementiel - Niveau 3',
-      category: 'Concert', image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1200',
-      price: 15000, isFree: false
-    },
-    {
-      _id: '2', title: 'Exposition Art Contemporain',
-      description: 'Découvrez les œuvres d\'artistes locaux talentueux. Peintures, sculptures et installations numériques exposées dans notre galerie pendant tout le mois de mars.',
-      date: '2026-03-01', time: '10h00', location: 'Galerie d\'art - Niveau 2',
-      category: 'Exposition', image: 'https://images.unsplash.com/photo-1531243269054-5ebf6f34081e?w=1200',
-      isFree: true
-    },
-    {
-      _id: '3', title: 'Défilé de Mode - Printemps 2026',
-      description: 'Présentation des nouvelles collections printemps-été par les boutiques du MegaMall. Venez découvrir les dernières tendances mode en avant-première.',
-      date: '2026-03-05', time: '18h00', location: 'Scène centrale - Niveau 1',
-      category: 'Défilé de mode', image: 'https://images.unsplash.com/photo-1558769132-cb1aea1f5140?w=1200',
-      price: 25000, isFree: false
-    },
-    {
-      _id: '4', title: 'Ventes Privées - Mode & Accessoires',
-      description: 'Jusqu\'à -70% sur une sélection d\'articles mode et accessoires. Réservé aux membres premium du MegaMall. Inscription gratuite sur place.',
-      date: '2026-03-10', time: '09h00', location: 'Toutes les boutiques Mode',
-      category: 'Vente privée', image: 'https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=1200',
-      isFree: true
-    },
-    {
-      _id: '5', title: 'Animation Enfants - Magie & Cirque',
-      description: 'Spectacle de magie et numéros de cirque pour émerveiller les enfants. Jongleurs, magiciens et clowns seront au rendez-vous pour un après-midi magique.',
-      date: '2026-03-15', time: '14h00', location: 'Espace enfants - Niveau 2',
-      category: 'Animation', image: 'https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=1200',
-      isFree: true
-    },
-    {
-      _id: '6', title: 'Concert Acoustique - Jazz Night',
-      description: 'Soirée jazz avec des musiciens internationaux dans une ambiance feutrée et élégante. Réservation conseillée, places limitées à 200 personnes.',
-      date: '2026-03-20', time: '19h30', location: 'Food Court - Niveau 3',
-      category: 'Concert', image: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=1200',
-      price: 20000, isFree: false
-    },
-    {
-      _id: '7', title: 'Spectacle de Danse - Urban Dance',
-      description: 'Compétition de danse hip-hop et breakdance ouverte à tous les âges. 12 équipes s\'affrontent pour le titre de champion du MegaMall 2026.',
-      date: '2026-03-25', time: '16h00', location: 'Scène centrale - Niveau 1',
-      category: 'Spectacle', image: 'https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=1200',
-      price: 10000, isFree: false
-    },
-    {
-      _id: '8', title: 'Atelier Cuisine - Chef Invité',
-      description: 'Cours de cuisine avec un chef étoilé. Apprenez à réaliser 3 recettes gastronomiques. Matériel et ingrédients fournis. Tablier offert aux participants.',
-      date: '2026-03-30', time: '11h00', location: 'Gourmet Palace - Niveau 3',
-      category: 'Autre', image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200',
-      price: 30000, isFree: false
-    }
-  ];
-
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private eventsService: EventsService,
+  ) {}
 
   ngOnInit(): void {
-    this.eventId = this.route.snapshot.paramMap.get('id') || '';
-    this.event   = this.tousLesEvenements.find(e => e._id === this.eventId) || null;
-
-    // Charger 3 événements similaires (même catégorie, sans l'actuel)
-    if (this.event) {
-      this.evenementsSimilaires = this.tousLesEvenements
-        .filter(e => e._id !== this.eventId && e.category === this.event!.category)
-        .slice(0, 3);
-
-      // Si pas assez dans la même catégorie, compléter avec d'autres
-      if (this.evenementsSimilaires.length < 3) {
-        const autres = this.tousLesEvenements
-          .filter(e => e._id !== this.eventId && e.category !== this.event!.category)
-          .slice(0, 3 - this.evenementsSimilaires.length);
-        this.evenementsSimilaires = [...this.evenementsSimilaires, ...autres];
-      }
+    const eventId = this.route.snapshot.paramMap.get('id') || '';
+    if (!eventId) {
+      this.notFound = true;
+      this.isLoading = false;
+      return;
     }
+
+    this.eventsService.obtenirEvenementParId(eventId).subscribe({
+      next: (data) => {
+        this.event = {
+          ...data,
+          image: data.image ? `${this.apiUrl}${data.image}` : undefined,
+          eventDateTime: new Date(data.eventDateTime)
+        };
+        // ✅ Charger les similaires ICI, après que this.event est assigné
+        this.chargerEvenementsSimilaires(eventId);
+        this.isLoading = false;
+      },
+      error: () => {
+        this.notFound = true;
+        this.isLoading = false;
+      }
+      })
+    }
+
+    chargerEvenementsSimilaires(currentId: string): void {
+    this.eventsService.chargerLesEvenements().subscribe({
+      next: (data) => {
+        const currentCategoryId = (this.event!.category as any)?._id;
+
+        // Même catégorie, sans l'événement actuel
+        let similaires = data
+          .filter(e => e._id !== currentId && (e.category as any)?._id === currentCategoryId)
+          .slice(0, 3);
+
+        // Compléter si moins de 3
+        if (similaires.length < 3) {
+          const autres = data
+            .filter(e => e._id !== currentId && (e.category as any)?._id !== currentCategoryId)
+            .slice(0, 3 - similaires.length);
+          similaires = [...similaires, ...autres];
+        }
+
+        this.evenementsSimilaires = similaires.map(e => ({
+          ...e,
+          image: e.image ? `${this.apiUrl}${e.image}` : undefined,
+          eventDateTime: new Date(e.eventDateTime)
+        }));
+      },
+      error: (err) => console.error('Erreur événements similaires', err)
+    });
   }
 
-  formaterDate(dateStr: string): string {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  formaterDate(date: Date): string {
+    return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  getMoisAbbr(dateStr: string): string {
+  formaterHeure(date: Date): string {
+    return new Date(date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  getJour(date: Date): string {
+    return new Date(date).getDate().toString().padStart(2, '0');
+  }
+
+  getMoisAbbr(date: Date): string {
     const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-    return mois[parseInt(dateStr.split('-')[1], 10) - 1] ?? '';
-  }
-
-  getJour(dateStr: string): string {
-    return dateStr.split('-')[2];
+    return mois[new Date(date).getMonth()];
   }
 
   getCategorieIcone(categorie: string): string {
