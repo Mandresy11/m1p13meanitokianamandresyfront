@@ -49,6 +49,7 @@ export class AuthService {
   deconnecter(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('utilisateur');
+    localStorage.removeItem('role');
     this.utilisateurConnecte.next(null);
   }
 
