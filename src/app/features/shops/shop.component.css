@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 
@@ -32,14 +31,12 @@
   overflow: hidden;
 }
 
-/* Animation du gradient */
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-/* Overlay subtil */
 .header-section::before {
   content: '';
   position: absolute;
@@ -51,7 +48,6 @@
   pointer-events: none;
 }
 
-/* Forme SVG en bas */
 .header-section::after {
   content: '';
   position: absolute;
@@ -63,7 +59,6 @@
   background-size: cover;
 }
 
-/* Badge moderne */
 .badge-container {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -100,7 +95,6 @@
   font-weight: 600;
 }
 
-/* Titre principal */
 .page-title {
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 800;
@@ -121,7 +115,6 @@
   text-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
 }
 
-/* Sous-titre */
 .page-subtitle {
   font-size: 1.125rem;
   color: rgba(255, 255, 255, 0.9);
@@ -136,7 +129,6 @@
   color: white;
 }
 
-/* Conteneur de recherche */
 .search-container {
   position: relative;
   z-index: 1;
@@ -228,6 +220,7 @@
 .delay-100 { animation-delay: 0.1s; opacity: 0; }
 .delay-200 { animation-delay: 0.2s; opacity: 0; }
 .delay-300 { animation-delay: 0.3s; opacity: 0; }
+.delay-350 { animation-delay: 0.35s; opacity: 0; }
 .delay-400 { animation-delay: 0.4s; opacity: 0; }
 
 /* ============================================
@@ -289,7 +282,6 @@
   height: 16px;
 }
 
-/* Pills de catégories */
 .category-pills {
   display: flex;
   flex-wrap: wrap;
@@ -406,7 +398,6 @@
   gap: 2rem;
 }
 
-/* Card de boutique */
 .shop-card {
   background: white;
   border-radius: 24px;
@@ -421,7 +412,6 @@
   box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
 }
 
-/* Image wrapper */
 .shop-image-wrapper {
   position: relative;
   height: 240px;
@@ -439,7 +429,6 @@
   transform: scale(1.1);
 }
 
-/* Overlay gradient sur l'image */
 .image-overlay {
   position: absolute;
   bottom: 0;
@@ -450,7 +439,6 @@
   pointer-events: none;
 }
 
-/* Badge catégorie en haut à droite */
 .category-badge {
   position: absolute;
   top: 1rem;
@@ -477,7 +465,6 @@
   white-space: nowrap;
 }
 
-/* Logo flottant */
 .shop-logo-container {
   position: absolute;
   bottom: -30px;
@@ -498,7 +485,6 @@
   border-radius: 12px;
 }
 
-/* Contenu de la card */
 .shop-content {
   padding: 2.5rem 1.5rem 1.5rem 1.5rem;
 }
@@ -534,14 +520,12 @@
   margin-bottom: 1.25rem;
 }
 
-/* Séparateur */
 .separator {
   height: 1px;
   background: linear-gradient(to right, transparent, #e5e7eb, transparent);
   margin-bottom: 1.25rem;
 }
 
-/* Footer avec bouton */
 .shop-footer {
   display: flex;
   justify-content: flex-end;
@@ -563,6 +547,7 @@
   box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
   position: relative;
   overflow: hidden;
+  text-decoration: none;
 }
 
 .shop-btn::before {
@@ -669,7 +654,87 @@
   height: 20px;
 }
 
+/* ============================================
+   ADMIN — BOUTON AJOUTER UNE BOUTIQUE
+   ============================================ */
+.admin-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
 
+.btn-admin-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
+}
+
+.btn-admin-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+}
+
+/* ============================================
+   ADMIN — BOUTONS EDIT / DELETE SUR LES CARTES
+   ============================================ */
+.admin-card-actions {
+  position: absolute;
+  top: 12px;
+  left: 12px; /* à gauche pour ne pas chevaucher le badge catégorie */
+  display: flex;
+  gap: 0.4rem;
+  z-index: 20;
+}
+
+.btn-card-edit,
+.btn-card-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-card-edit {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.btn-card-delete {
+  background: rgba(239, 68, 68, 0.88);
+}
+
+.btn-card-edit:hover {
+  background: white;
+  transform: scale(1.12);
+}
+
+.btn-card-delete:hover {
+  background: rgba(220, 38, 38, 0.95);
+  transform: scale(1.12);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
 @media (max-width: 768px) {
   .header-section {
     padding: 4rem 0 6rem 0;
@@ -734,7 +799,6 @@
     font-size: 1.125rem;
   }
 }
-
 
 .icon {
   flex-shrink: 0;

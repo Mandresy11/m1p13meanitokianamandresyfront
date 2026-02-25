@@ -1,0 +1,165 @@
+<div class="form-page">
+
+  <!-- Loading quand on charge en mode édition -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement de la boutique...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="form-container">
+
+    <!-- En-tête -->
+    <div class="form-header">
+      <a routerLink="/boutiques" class="btn-retour">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Retour
+      </a>
+      <h1 class="form-title">
+        {{ isEditMode ? '✏️ Modifier la boutique' : '🏪 Nouvelle boutique' }}
+      </h1>
+      <p class="form-subtitle">
+        {{ isEditMode ? 'Modifiez les informations de la boutique' : 'Remplissez les informations pour créer une nouvelle boutique' }}
+      </p>
+    </div>
+
+    <!-- Formulaire -->
+    <form [formGroup]="form" (ngSubmit)="soumettre()" class="shop-form">
+
+      <!-- Nom -->
+      <div class="field-group">
+        <label class="field-label">Nom de la boutique *</label>
+        <input
+          type="text"
+          formControlName="name"
+          class="field-input"
+          [class.error]="f['name'].invalid && f['name'].touched"
+          placeholder="Ex: Zara, H&M, Apple Store..."
+        />
+        <span class="field-error" *ngIf="f['name'].invalid && f['name'].touched">
+          Le nom est requis (minimum 2 caractères)
+        </span>
+      </div>
+
+      <!-- Description -->
+      <div class="field-group">
+        <label class="field-label">Description *</label>
+        <textarea
+          formControlName="description"
+          class="field-input field-textarea"
+          [class.error]="f['description'].invalid && f['description'].touched"
+          placeholder="Décrivez la boutique, ses produits, son ambiance..."
+          rows="4"
+        ></textarea>
+        <span class="field-error" *ngIf="f['description'].invalid && f['description'].touched">
+          La description est requise (minimum 10 caractères)
+        </span>
+      </div>
+
+      <!-- Catégorie -->
+      <div class="field-group">
+        <label class="field-label">Catégorie *</label>
+        <select
+          formControlName="category"
+          class="field-input field-select"
+          [class.error]="f['category'].invalid && f['category'].touched"
+        >
+          <option value="">-- Choisir une catégorie --</option>
+          <option *ngFor="let cat of categories" [value]="cat._id">
+            {{ cat.icon }} {{ cat.name }}
+          </option>
+        </select>
+        <span class="field-error" *ngIf="f['category'].invalid && f['category'].touched">
+          Veuillez choisir une catégorie
+        </span>
+      </div>
+
+      <!-- Localisation -->
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Niveau *</label>
+          <select
+            formControlName="level"
+            class="field-input field-select"
+            [class.error]="f['level'].invalid && f['level'].touched"
+          >
+            <option value="">-- Niveau --</option>
+            <option value="0">Niveau 0 (RDC)</option>
+            <option value="1">Niveau 1</option>
+            <option value="2">Niveau 2</option>
+            <option value="3">Niveau 3</option>
+          </select>
+          <span class="field-error" *ngIf="f['level'].invalid && f['level'].touched">Requis</span>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Section *</label>
+          <input
+            type="text"
+            formControlName="section"
+            class="field-input"
+            [class.error]="f['section'].invalid && f['section'].touched"
+            placeholder="Ex: A, B, C..."
+            maxlength="5"
+          />
+          <span class="field-error" *ngIf="f['section'].invalid && f['section'].touched">Requis</span>
+        </div>
+      </div>
+
+      <!-- Téléphone -->
+      <div class="field-group">
+        <label class="field-label">Téléphone</label>
+        <input
+          type="text"
+          formControlName="phoneNumber"
+          class="field-input"
+          placeholder="Ex: +212 6 00 00 00 00"
+        />
+      </div>
+
+      <!-- Upload Logo -->
+      <div class="field-group">
+        <label class="field-label">Logo de la boutique</label>
+        <div class="upload-area" (click)="logoInput.click()">
+          <img *ngIf="logoPreview" [src]="logoPreview" class="preview-img preview-logo" alt="Logo preview"/>
+          <div *ngIf="!logoPreview" class="upload-placeholder">
+            <span class="upload-icon">🖼️</span>
+            <p>Cliquez pour choisir le logo</p>
+            <small>PNG, JPG — max 5MB</small>
+          </div>
+        </div>
+        <input #logoInput type="file" accept="image/*" (change)="onLogoChange($event)" hidden/>
+      </div>
+
+      <!-- Upload Cover -->
+      <div class="field-group">
+        <label class="field-label">Photo de couverture</label>
+        <div class="upload-area upload-area-wide" (click)="coverInput.click()">
+          <img *ngIf="coverPreview" [src]="coverPreview" class="preview-img preview-cover" alt="Cover preview"/>
+          <div *ngIf="!coverPreview" class="upload-placeholder">
+            <span class="upload-icon">📸</span>
+            <p>Cliquez pour choisir la photo de couverture</p>
+            <small>PNG, JPG — max 5MB — format paysage recommandé</small>
+          </div>
+        </div>
+        <input #coverInput type="file" accept="image/*" (change)="onCoverChange($event)" hidden/>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <a routerLink="/boutiques" class="btn-cancel">Annuler</a>
+        <button type="submit" class="btn-submit" [disabled]="isSaving">
+          <span *ngIf="!isSaving">
+            {{ isEditMode ? '💾 Enregistrer les modifications' : '✅ Créer la boutique' }}
+          </span>
+          <span *ngIf="isSaving" class="saving-text">
+            <span class="mini-spinner"></span>
+            Enregistrement...
+          </span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

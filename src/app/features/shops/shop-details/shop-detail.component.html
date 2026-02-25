@@ -1,9 +1,7 @@
 <div class="detail-page">
 
   <!-- Chargement -->
-  <div *ngIf="isLoading" class="loading-spinner">
-    Chargement...
-  </div>
+  <div *ngIf="isLoading" class="loading-spinner">Chargement...</div>
 
   <!-- Boutique introuvable -->
   <div *ngIf="notFound && !isLoading" class="not-found">
@@ -25,7 +23,6 @@
         [alt]="shop.name"
         class="hero-img"
         loading="lazy"
-        (error)="($event.target.src='https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800')"
       />
       <div class="hero-overlay"></div>
 
@@ -36,13 +33,30 @@
         Retour
       </a>
 
+      <!-- 👇 BOUTONS ADMIN — visibles seulement pour l'admin -->
+      <div class="admin-hero-actions" *ngIf="estAdmin">
+        <a [routerLink]="['/boutiques', shop._id, 'modifier']" class="btn-hero-edit">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+          Modifier
+        </a>
+        <button class="btn-hero-delete" (click)="supprimerBoutique()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+          Supprimer
+        </button>
+      </div>
+
       <div class="hero-content">
         <img
           [src]="shop.logo || 'https://via.placeholder.com/80'"
           [alt]="shop.name + ' logo'"
           class="hero-logo"
           loading="lazy"
-          (error)="($event.target.src='https://via.placeholder.com/80')"
         />
         <div class="hero-text">
           <span class="hero-category">
@@ -80,16 +94,12 @@
                         {{ p.open }} - {{ p.close }}<span *ngIf="!last">, </span>
                       </span>
                     </ng-container>
-                    <ng-template #closed>
-                      Fermé
-                    </ng-template>
+                    <ng-template #closed>Fermé</ng-template>
                   </span>
                 </li>
               </ul>
             </ng-container>
-            <ng-template #noHours>
-              <span>Aucun horaire disponible</span>
-            </ng-template>
+            <ng-template #noHours><span>Aucun horaire disponible</span></ng-template>
           </div>
         </div>
         <div class="divider-v"></div>
@@ -101,31 +111,31 @@
 
       <!-- Section Produits -->
       <section class="products-section">
-
         <div class="section-header">
           <h2 class="section-title">
             Nos produits
             <span class="products-count">{{ products.length }}</span>
           </h2>
+
+          <!-- 👇 Bouton ajouter un produit — admin seulement -->
+          <a *ngIf="estAdmin" [routerLink]="['/boutiques', shop._id, 'produits', 'ajouter']" class="btn-add-product">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+            </svg>
+            Ajouter un produit
+          </a>
         </div>
 
-        <!-- Aucun produit -->
         <div *ngIf="products.length === 0" class="no-products">
           <p>🛍️ Aucun produit disponible pour le moment.</p>
         </div>
 
-        <!-- Grille produits -->
         <div class="products-grid" *ngIf="products.length > 0">
           <div class="product-card" *ngFor="let p of products">
-
             <div class="product-img-wrapper">
               <img [src]="p.image" [alt]="p.name" class="product-img" loading="lazy" />
-
-              <span class="stock-badge rupture" *ngIf="p.stock === 0">
-                Rupture
-              </span>
+              <span class="stock-badge rupture" *ngIf="p.stock === 0">Rupture</span>
             </div>
-
             <div class="product-body">
               <h3 class="product-name">{{ p.name }}</h3>
               <p class="product-desc">{{ p.description }}</p>
@@ -134,10 +144,8 @@
                 <span class="product-stock" *ngIf="p.stock > 0">{{ p.stock }} restants</span>
               </div>
             </div>
-
           </div>
         </div>
-
       </section>
 
     </div>
