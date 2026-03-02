@@ -1,6 +1,5 @@
 <div class="detail-page">
 
-  <!-- Chargement -->
   <div *ngIf="isLoading" class="loading-spinner">Chargement...</div>
 
   <!-- Boutique introuvable -->
@@ -133,7 +132,6 @@
             <div class="product-img-wrapper">
               <img [src]="p.image" [alt]="p.name" class="product-img" loading="lazy" />
               <span class="stock-badge rupture" *ngIf="p.stock === 0">Rupture</span>
-              <!-- Boutons admin au hover -->
               <div class="product-actions" *ngIf="estAdmin">
                 <button class="action-btn edit-btn" (click)="ouvrirModalEdition(p)" title="Modifier">✏️</button>
                 <button class="action-btn delete-btn" (click)="supprimerProduit(p._id, $event)" title="Supprimer">🗑️</button>
@@ -152,94 +150,95 @@
       </section>
 
       <!-- Section Avis -->
-<section class="products-section">
-  <div class="section-header">
-    <h2 class="section-title">
-      Avis clients
-      <span class="products-count">{{ reviews.length }}</span>
-    </h2>
-    <button *ngIf="estUser" class="btn-add-product" (click)="ouvrirModalAvis()">
+      <section class="products-section">
+        <div class="section-header">
+          <h2 class="section-title">
+            Avis clients
+            <span class="products-count">{{ reviews.length }}</span>
+          </h2>
+          <button *ngIf="estUser" class="btn-add-product" (click)="ouvrirModalAvis()">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
             Ajouter un avis
-    </button>
-  </div>
-
-  <div *ngIf="reviews.length === 0" class="no-products">
-    <p>💬 Aucun avis pour le moment.</p>
-  </div>
-
-  <div class="products-grid" *ngIf="reviews.length > 0">
-    <div class="product-card" *ngFor="let r of reviews">
-      <div class="product-body">
-        <div class="product-footer" style="margin-bottom: 8px;">
-          <span class="product-name">{{ r.user.username || 'Anonyme' }}</span>
-          <span class="product-price">
-            <ng-container *ngFor="let star of getStars(5); let i = index">
-              {{ i < r.rating ? '⭐' : '☆' }}
-            </ng-container>
-          </span>
+          </button>
         </div>
-        <p class="product-desc">{{ r.comment }}</p>
-        <small style="color: #aaa;">{{ r.createdAt | date:'dd/MM/yyyy' }}</small>
-      </div>
-    </div>
-  </div>
-</section>
 
-    </div>
-  </div>
-
- <!-- ========== MODAL AVIS ========== -->
-<div class="modal-overlay" *ngIf="showReviewModal" (click)="fermerModalAvis()">
-  <div class="modal-box" (click)="$event.stopPropagation()">
-
-    <div class="modal-header">
-      <h2>⭐ Laisser un avis</h2>
-      <button class="modal-close" (click)="fermerModalAvis()">✕</button>
-    </div>
-
-    <div class="modal-body">
-
-      <!-- Étoiles -->
-      <div class="field-group">
-        <label>Note *</label>
-        <div style="display:flex; gap:0.4rem;">
-          <span
-            *ngFor="let star of [1,2,3,4,5]"
-            (mouseenter)="hoveredStar = star"
-            (mouseleave)="hoveredStar = 0"
-            (click)="setRating(star)"
-            style="font-size:1.8rem; cursor:pointer; transition: transform 0.15s;"
-            [style.color]="star <= (hoveredStar || reviewForm.rating) ? '#f59e0b' : '#d1d5db'"
-            [style.transform]="star <= hoveredStar ? 'scale(1.2)' : 'scale(1)'"
-          >★</span>
+        <div *ngIf="reviews.length === 0" class="no-products">
+          <p>💬 Aucun avis pour le moment.</p>
         </div>
-      </div>
 
-      <!-- Commentaire -->
-      <div class="field-group">
-        <label>Commentaire *</label>
-        <textarea [(ngModel)]="reviewForm.comment" rows="4" placeholder="Décrivez votre expérience..."></textarea>
-      </div>
-
-      <!-- Erreur -->
-      <p *ngIf="reviewErreur" style="color:#ef4444; font-size:0.85rem; margin:0;">⚠ {{ reviewErreur }}</p>
+        <div class="reviews-grid" *ngIf="reviews.length > 0">
+          <div class="review-card" *ngFor="let r of reviews">
+            <div class="review-header">
+              <div class="review-avatar">{{ (r.user.username || 'A')[0].toUpperCase() }}</div>
+              <div class="review-meta">
+                <span class="review-username">{{ r.user.username || 'Anonyme' }}</span>
+                <small class="review-date">{{ r.createdAt | date:'dd/MM/yyyy' }}</small>
+              </div>
+            </div>
+            <div class="review-stars">
+              <span
+                *ngFor="let star of getStars(5); let i = index"
+                class="star"
+                [class.star-filled]="i < r.rating"
+              >★</span>
+              <span class="review-rating-num">{{ r.rating }}/5</span>
+            </div>
+            <p class="review-comment">{{ r.comment }}</p>
+          </div>
+        </div>
+      </section>
 
     </div>
-
-    <div class="modal-footer">
-      <button class="btn-cancel" (click)="fermerModalAvis()">Annuler</button>
-      <button class="btn-save" (click)="soumettreAvis()" [disabled]="isSavingReview">
-        {{ isSavingReview ? '⏳ Envoi...' : '✅ Envoyer' }}
-      </button>
-    </div>
-
   </div>
-</div>
 
-  <!-- ========== MODAL PRODUIT ========== -->
+  <!--MODAL AVIS-->
+  <div class="modal-overlay" *ngIf="showReviewModal" (click)="fermerModalAvis()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>⭐ Laisser un avis</h2>
+        <button class="modal-close" (click)="fermerModalAvis()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="field-group">
+          <label>Note *</label>
+          <div style="display:flex; gap:0.4rem;">
+            <span
+              *ngFor="let star of [1,2,3,4,5]"
+              (mouseenter)="hoveredStar = star"
+              (mouseleave)="hoveredStar = 0"
+              (click)="setRating(star)"
+              style="font-size:1.8rem; cursor:pointer; transition: transform 0.15s;"
+              [style.color]="star <= (hoveredStar || reviewForm.rating) ? '#f59e0b' : '#d1d5db'"
+              [style.transform]="star <= hoveredStar ? 'scale(1.2)' : 'scale(1)'"
+            >★</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Commentaire *</label>
+          <textarea [(ngModel)]="reviewForm.comment" rows="4" placeholder="Décrivez votre expérience..."></textarea>
+        </div>
+
+        <p *ngIf="reviewErreur" style="color:#ef4444; font-size:0.85rem; margin:0;">⚠ {{ reviewErreur }}</p>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="fermerModalAvis()">Annuler</button>
+        <button class="btn-save" (click)="soumettreAvis()" [disabled]="isSavingReview">
+          {{ isSavingReview ? '⏳ Envoi...' : ' Envoyer' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!--MODAL PRODUIT-->
   <div class="modal-overlay" *ngIf="showModal" (click)="fermerModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
 
@@ -293,7 +292,7 @@
       <div class="modal-footer">
         <button class="btn-cancel" (click)="fermerModal()">Annuler</button>
         <button class="btn-save" (click)="soumettreFormulaire()" [disabled]="isSaving">
-          {{ isSaving ? '⏳ Enregistrement...' : (isEditMode ? '💾 Sauvegarder' : '✅ Ajouter') }}
+          {{ isSaving ? '⏳ Enregistrement...' : (isEditMode ? '💾 Sauvegarder' : ' Ajouter') }}
         </button>
       </div>
 

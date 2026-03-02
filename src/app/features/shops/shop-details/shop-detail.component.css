@@ -156,6 +156,91 @@
 .edit-btn   { background: rgba(255,255,255,0.92); }
 .delete-btn { background: rgba(255,235,235,0.92); }
 
+/* ── AVIS ── */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.review-card {
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.review-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(102,126,234,0.12);
+}
+
+/* Header: avatar + nom + date */
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.review-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  font-size: 1rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.review-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.review-username {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1f2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.review-date {
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+/* Étoiles */
+.review-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.star {
+  font-size: 1.1rem;
+  color: #d1d5db;
+  line-height: 1;
+}
+.star.star-filled {
+  color: #f59e0b;
+}
+.review-rating-num {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-left: 0.35rem;
+}
+
+/* Commentaire */
+.review-comment {
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.65;
+  margin: 0;
+}
+
 /* Modal overlay */
 .modal-overlay {
   position: fixed; inset: 0;
@@ -257,6 +342,7 @@
   .card-row      { flex-direction: column; gap: 1.25rem; }
   .divider-v     { display: none; }
   .products-grid { grid-template-columns: 1fr 1fr; }
+  .reviews-grid  { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 480px) {
   .shop-hero     { height: 250px; }
@@ -264,4 +350,5 @@
   .hero-logo     { width: 55px; height: 55px; }
   .page-body     { padding: 1.5rem 1rem 4rem; }
   .products-grid { grid-template-columns: 1fr; }
+  .reviews-grid  { grid-template-columns: 1fr; }
 }
