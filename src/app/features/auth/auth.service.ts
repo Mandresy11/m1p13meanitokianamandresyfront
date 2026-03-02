@@ -77,6 +77,7 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('utilisateur');
     localStorage.removeItem('role');
+    localStorage.removeItem('id');
     this.utilisateurConnecte.next(null);
   }
 
@@ -107,6 +108,7 @@ export class AuthService {
     localStorage.setItem('token', token);
     localStorage.setItem('utilisateur', JSON.stringify(user.username));
     localStorage.setItem('role', JSON.stringify(user.role));
+    localStorage.setItem('id', JSON.stringify(user._id));
     this.utilisateurConnecte.next(user);
   }
 
