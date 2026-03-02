@@ -75,7 +75,10 @@
             <div class="info-icon-wrap pink">📍</div>
             <div>
               <div class="info-label">Lieu</div>
-              <div class="info-value">{{ event.shop.name }} - Niveau {{ event.shop.location.level}}, Section {{ event.shop.location.section }}</div>
+              <!-- ✅ CORRECTION : optional chaining sur shop et location -->
+              <div class="info-value">
+                {{ event.shop?.name }} - Niveau {{ event.shop?.location?.level }}, Section {{ event.shop?.location?.section }}
+              </div>
             </div>
           </div>
           <div class="info-item">
@@ -90,7 +93,7 @@
         </div>
       </div>
 
-      <!--  Bouton de réservation -->
+      <!-- Bouton de réservation -->
       <div class="card reservation-card">
         <div class="reservation-content">
           <div class="reservation-text">
@@ -125,7 +128,7 @@
             </div>
 
             <div class="sim-body">
-              <div class="sim-category"> {{ sim.category.name }}</div>
+              <div class="sim-category">{{ sim.category?.name }}</div>
               <h3 class="sim-title">{{ sim.title }}</h3>
               <div class="sim-footer">
                 <span class="sim-prix" [class.gratuit]="sim.isFree">
@@ -137,8 +140,10 @@
 
           </div>
         </div>
+
       </section>
 
     </div>
   </div>
+
 </div>

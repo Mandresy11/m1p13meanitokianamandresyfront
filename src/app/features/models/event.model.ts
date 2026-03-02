@@ -1,20 +1,21 @@
+// event.model.ts
 export interface Event {
   _id: string;
   title: string;
   description: string;
   eventDateTime: Date;
-  shop: {
+  shop?: {
     _id: string;
     name: string;
-    location: {
+    location?: {
       level: number;
       section: string;
     };
   };
   location: string;
   category: {
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
     description: string;
   };
   image?: string;
@@ -23,7 +24,7 @@ export interface Event {
 }
 
 export interface EventCategory {
-    _id: string;
-    name: string;
-    description?: string;
-  }
+  _id: string;
+  name: string;
+  description?: string;
+}

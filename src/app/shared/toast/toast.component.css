@@ -132,7 +132,6 @@
   to   { width: 0%; }
 }
 
-/* ── Responsive ── */
 @media (max-width: 480px) {
   .toast-container {
     top: auto;

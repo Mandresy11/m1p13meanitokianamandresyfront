@@ -6,65 +6,51 @@ import { ShopFormComponent } from './features/shops/shop-form/shop-form.componen
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { EventsComponent } from './features/events/events.component';
 import { EventDetailComponent } from './features/events/event-detail/event-detail.component';
+import { EventFormComponent } from './features/events/event-form/event-form.component'; // ← NEW
 import { authGuard } from './guards/auth-guard';
 import { adminGuard } from './guards/admin-guard';
 
 export const routes: Routes = [
-  // Page d'accueil
-  {
-    path: '',
-    component: HomeComponent
-  },
 
-  // Page des boutiques (liste)
-  {
-    path: 'boutiques',
-    component: ShopsComponent
-  },
+  // ── Page d'accueil
+  { path: '', component: HomeComponent },
 
-
-
+  // ── Boutiques
+  { path: 'boutiques', component: ShopsComponent },
   {
     path: 'boutiques/ajouter',
     component: ShopFormComponent,
     canActivate: [adminGuard]
   },
-
-  // Modifier une boutique existante
   {
     path: 'boutiques/:id/modifier',
     component: ShopFormComponent,
     canActivate: [adminGuard]
   },
+  { path: 'boutiques/:id', component: ShopDetailComponent },
 
-  // Page de détail d'une boutique
+  // ── Événements
+  { path: 'evenements', component: EventsComponent },
+
   {
-    path: 'boutiques/:id',
-    component: ShopDetailComponent
+    path: 'evenements/ajouter',
+    component: EventFormComponent,
+    canActivate: [adminGuard]
   },
-
-  // Page des événements (liste)
   {
-    path: 'evenements',
-    component: EventsComponent
+    path: 'evenements/:id/modifier',
+    component: EventFormComponent,
+    canActivate: [adminGuard]
   },
+  { path: 'evenements/:id', component: EventDetailComponent },
 
-  // Page de détail d'un événement
-  {
-    path: 'evenements/:id',
-    component: EventDetailComponent
-  },
-
-  // Dashboard admin
+  // ── Dashboard admin
   {
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [adminGuard]
   },
 
-  // Redirection si la route n'existe pas
-  {
-    path: '**',
-    redirectTo: ''
-  }
+  // ── Fallback
+  { path: '**', redirectTo: '' }
 ];

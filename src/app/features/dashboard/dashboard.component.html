@@ -1,5 +1,3 @@
-
-
 <div class="dashboard-wrapper">
 
   <!--SKELETON LOADER-->
@@ -19,6 +17,7 @@
           <div class="skeleton sk-side-2"></div>
         </div>
       </div>
+      <div class="skeleton sk-events"></div>
     </div>
   }
 
@@ -31,7 +30,6 @@
       <button class="btn-retry" (click)="retry()">↻ Réessayer</button>
     </div>
   }
-
 
   @if (!isLoading && !hasError) {
 
@@ -245,6 +243,56 @@
       </aside>
 
     </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!--  SECTION ÉVÉNEMENTS À VENIR                                -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="card events-dashboard-card">
+
+      <div class="card-header">
+        <h2 class="card-title">&#x1F4C5; Événements à venir</h2>
+        <a routerLink="/evenements" class="btn-see-all-inline">Voir tous &#x2192;</a>
+      </div>
+
+      @if (evenementsAVenir.length === 0) {
+        <div class="events-empty">
+          <span class="events-empty-icon">&#x1F5D3;</span>
+          <p>Aucun événement à venir pour le moment.</p>
+          <a routerLink="/evenements" class="btn-see-all">Gérer les événements &#x2192;</a>
+        </div>
+      }
+
+      <div class="events-dashboard-grid">
+        @for (ev of evenementsAVenir; track ev._id) {
+          <a [routerLink]="['/evenements', ev._id]" class="event-dash-card">
+
+            <!-- Pastille date -->
+            <div class="event-dash-date">
+              <span class="event-day">{{ getJour(ev.eventDateTime) }}</span>
+              <span class="event-month">{{ getMoisAbbr(ev.eventDateTime) }}</span>
+            </div>
+
+            <!-- Infos -->
+            <div class="event-dash-info">
+              <span class="event-dash-category">{{ ev.category && ev.category.name ? ev.category.name : '' }}</span>
+              <h3 class="event-dash-title">{{ ev.title }}</h3>
+              <div class="event-dash-meta">
+                <span class="meta-time">{{ getHeure(ev.eventDateTime) }}</span>
+                <span class="meta-location">{{ ev.location ? ev.location : (ev.shop && ev.shop.name ? ev.shop.name : '') }}</span>
+              </div>
+            </div>
+
+            <!-- Badge prix -->
+            <div class="event-dash-badge" [class.free]="ev.isFree">
+              {{ ev.isFree ? 'Gratuit' : (ev.price ? ev.price + '\u00A0\u20AC' : 'Gratuit') }}
+            </div>
+
+          </a>
+        }
+      </div>
+
+    </section>
+    <!-- ═══════════════════════════════════════════════════════════ -->
 
   }
 

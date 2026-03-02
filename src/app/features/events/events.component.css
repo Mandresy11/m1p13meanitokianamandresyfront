@@ -194,7 +194,6 @@
   color: #374151;
 }
 
-
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
@@ -518,6 +517,7 @@
   cursor: pointer;
   font-family: 'Plus Jakarta Sans', sans-serif;
   transition: opacity 0.2s, transform 0.2s;
+  text-decoration: none;
 }
 
 .event-btn:hover {
@@ -587,7 +587,6 @@
 
 .reset-btn-large .icon { width: 18px; height: 18px; }
 
-
 @media (max-width: 900px) {
   .header-body { flex-direction: column; gap: 2rem; }
   .header-right { flex: 1; width: 100%; }
@@ -599,4 +598,109 @@
   .events-grid { grid-template-columns: 1fr; gap: 1.25rem; }
   .event-card { height: 320px; }
   .filters-inner { flex-direction: column; align-items: flex-start; }
+}
+
+/* ADMIN — styles ajoutés */
+
+/* Bouton "Nouvel événement" dans le header */
+.admin-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.btn-admin-create {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #667eea;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.btn-admin-create:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  background: #f5f3ff;
+}
+
+/* Boutons Modifier / Supprimer sur chaque carte */
+.admin-actions {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+/* Apparaissent au survol de la carte */
+.event-card:hover .admin-actions {
+  opacity: 1;
+}
+
+.btn-admin {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-edit {
+  background: rgba(255, 255, 255, 0.92);
+  color: #667eea;
+  backdrop-filter: blur(6px);
+}
+
+.btn-edit:hover {
+  background: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-delete {
+  background: rgba(239, 68, 68, 0.88);
+  color: white;
+  backdrop-filter: blur(6px);
+}
+
+.btn-delete:hover {
+  background: #ef4444;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.btn-admin:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Spinner dans le bouton supprimer */
+.mini-spinner-dark {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

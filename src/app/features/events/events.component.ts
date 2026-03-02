@@ -1,25 +1,21 @@
-import { ShopService } from './../shops/shop.service';
-import { ChangeDetectorRef } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Event, EventCategory } from '../models/event.model';
 import { EventsService } from './events.service';
+import { AuthService } from '../auth/auth.service';
+import { ToastService } from '../../shared/toast/toast.service';
 import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-events',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule], // RouterLink ajouté
+  imports: [CommonModule, RouterLink, FormsModule],
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css']
 })
 export class EventsComponent implements OnInit {
-  constructor(
-    private eventsService: EventsService,
-    private cdr: ChangeDetectorRef,
-  ) {}
 
   apiUrl = environment.apiUrl;
   evenements: Event[] = [];
@@ -28,25 +24,39 @@ export class EventsComponent implements OnInit {
   categorieChoisie: string = 'tous';
   recherche: string = '';
 
+  //  Admin
+  isAdmin = false;
+  suppressionEnCours: string | null = null;
+
+  constructor(
+    private eventsService: EventsService,
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService,
+    private toastService: ToastService,
+    private router: Router
+  ) {}
+
   ngOnInit(): void {
+    // Vérifier si l'utilisateur connecté est admin
+    this.isAdmin = this.authService.estAdmin();
     this.chargerLesEvenements();
   }
 
   chargerLesEvenements(): void {
     this.eventsService.chargerLesEvenements().subscribe({
       next: (data) => {
-        console.log(data)
         this.evenements = data.map(event => ({
           ...event,
           image: event.image ? `${this.apiUrl}${event.image}` : undefined,
           eventDateTime: new Date(event.eventDateTime)
         }));
+
         const uniqueCategoriesMap = new Map();
         this.evenements.forEach(event => {
           if (event.category?._id) {
             uniqueCategoriesMap.set(event.category._id, event.category);
           }
-        })
+        });
         this.categories = Array.from(uniqueCategoriesMap.values());
         this.categorieChoisie = 'tous';
         this.evenementsAffiches = [...this.evenements];
@@ -55,8 +65,7 @@ export class EventsComponent implements OnInit {
       error: (err) => {
         console.error(err);
       }
-    })
-    this.evenementsAffiches = [...this.evenements];
+    });
   }
 
   filtrerParCategorie(categorie: string): void {
@@ -70,58 +79,84 @@ export class EventsComponent implements OnInit {
   }
 
   appliquerLesFiltres(): void {
-  this.evenementsAffiches = this.evenements.filter(event => {
+    this.evenementsAffiches = this.evenements.filter(event => {
+      const catVal: any = event?.category ?? null;
+      let eventCatIdentifier: string | null = null;
 
-    const catVal: any = event?.category ?? null;
-    let eventCatIdentifier: string | null = null;
+      if (typeof catVal === 'string') {
+        eventCatIdentifier = catVal;
+      } else if (typeof catVal === 'object' && catVal !== null) {
+        eventCatIdentifier = catVal._id ?? null;
+      }
 
-    // If category is just an ID string
-    if (typeof catVal === 'string') {
-      eventCatIdentifier = catVal;
-    }
-    // If category is a populated object
-    else if (typeof catVal === 'object' && catVal !== null) {
-      eventCatIdentifier = catVal._id ?? catVal.name;
-    }
+      const matchCat =
+        this.categorieChoisie === 'tous' ||
+        eventCatIdentifier === this.categorieChoisie;
 
-    const bonneCategorie =
-      this.categorieChoisie === 'tous' ||
-      eventCatIdentifier === this.categorieChoisie;
+      const term = this.recherche.toLowerCase().trim();
+      const matchRecherche =
+        !term ||
+        event.title.toLowerCase().includes(term) ||
+        event.description.toLowerCase().includes(term) ||
+        event.shop?.name?.toLowerCase().includes(term);
 
-    const correspondRecherche =
-      this.recherche === '' ||
-      event.title.toLowerCase().includes(this.recherche.toLowerCase()) ||
-      event.description.toLowerCase().includes(this.recherche.toLowerCase());
-
-    return bonneCategorie && correspondRecherche;
-  });
-}
+      return matchCat && matchRecherche;
+    });
+  }
 
   toutReinitialiser(): void {
-    this.categorieChoisie = 'tous';
     this.recherche = '';
+    this.categorieChoisie = 'tous';
     this.evenementsAffiches = [...this.evenements];
   }
 
-  combienDansCetteCategorie(categorie: string): number {
-    return this.evenements.filter(e =>
-      (e.category as any)._id === categorie || e.category.name === categorie
-    ).length;
+  compterParCategorie(categoryId: string): number {
+    return this.evenements.filter(e => (e.category as any)?._id === categoryId).length;
   }
 
   formaterDate(date: Date): string {
-    return new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    return new Date(date).toLocaleDateString('fr-FR', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    });
   }
 
   formaterHeure(date: Date): string {
-    return new Date(date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    return new Date(date).toLocaleTimeString('fr-FR', {
+      hour: '2-digit', minute: '2-digit'
+    });
   }
-  getJour(date: Date): string {
-    return new Date(date).getDate().toString().padStart(2, '0');
+
+  getJour(date: Date): number {
+    return new Date(date).getDate();
   }
 
   getMoisAbbr(date: Date): string {
-    const mois = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-    return mois[new Date(date).getMonth()];
+    return new Date(date).toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+  }
+
+  //  Actions admin
+
+  modifierEvenement(id: string, domEvent: MouseEvent): void {
+    domEvent.stopPropagation(); // empêche la navigation vers le détail de l'événement
+    this.router.navigate(['/evenements', id, 'modifier']);
+  }
+
+  supprimerEvenement(id: string, domEvent: MouseEvent): void {
+    domEvent.stopPropagation();
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet événement ?')) return;
+
+    this.suppressionEnCours = id;
+    this.eventsService.supprimerEvenement(id).subscribe({
+      next: () => {
+        this.toastService.succes('Événement supprimé avec succès.');
+        this.suppressionEnCours = null;
+        this.eventsService.viderCache();
+        this.chargerLesEvenements();
+      },
+      error: (err) => {
+        this.toastService.erreur(err.error?.message || 'Erreur lors de la suppression.');
+        this.suppressionEnCours = null;
+      }
+    });
   }
 }

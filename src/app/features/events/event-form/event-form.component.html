@@ -1,0 +1,190 @@
+<div class="form-page">
+
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement de l'événement...</p>
+  </div>
+
+  <div *ngIf="!isLoading" class="form-container">
+
+    <div class="form-header">
+      <a routerLink="/evenements" class="btn-retour">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Retour aux événements
+      </a>
+      <h1 class="form-title">
+        {{ isEditMode ? '✏️ Modifier l\'événement' : '📅 Nouvel événement' }}
+      </h1>
+      <p class="form-subtitle">
+        {{ isEditMode
+          ? 'Modifiez les informations de l\'événement'
+          : 'Remplissez les informations pour créer un nouvel événement' }}
+      </p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="soumettre()" class="shop-form">
+
+      <!-- Titre -->
+      <div class="field-group">
+        <label class="field-label">Titre de l'événement *</label>
+        <input
+          type="text"
+          formControlName="title"
+          class="field-input"
+          [class.error]="f['title'].invalid && f['title'].touched"
+          placeholder="Ex: Soldes d'été, Concert live..."
+        />
+        <span class="field-error" *ngIf="f['title'].invalid && f['title'].touched">
+          Le titre est requis (minimum 3 caractères)
+        </span>
+      </div>
+
+      <!-- Description -->
+      <div class="field-group">
+        <label class="field-label">Description *</label>
+        <textarea
+          formControlName="description"
+          class="field-input field-textarea"
+          [class.error]="f['description'].invalid && f['description'].touched"
+          placeholder="Décrivez l'événement..."
+          rows="4"
+        ></textarea>
+        <span class="field-error" *ngIf="f['description'].invalid && f['description'].touched">
+          La description est requise (minimum 10 caractères)
+        </span>
+      </div>
+
+      <!-- Date & Heure -->
+      <div class="field-group">
+        <label class="field-label">Date et heure *</label>
+        <input
+          type="datetime-local"
+          formControlName="eventDateTime"
+          class="field-input"
+          [class.error]="f['eventDateTime'].invalid && f['eventDateTime'].touched"
+        />
+        <span class="field-error" *ngIf="f['eventDateTime'].invalid && f['eventDateTime'].touched">
+          La date et l'heure sont requises
+        </span>
+      </div>
+
+      <!-- Localisation -->
+      <div class="field-group">
+        <label class="field-label">Localisation dans le centre *</label>
+        <input
+          type="text"
+          formControlName="location"
+          class="field-input"
+          [class.error]="f['location'].invalid && f['location'].touched"
+          placeholder="Ex: Atrium central, Niveau 2..."
+        />
+        <span class="field-error" *ngIf="f['location'].invalid && f['location'].touched">
+          La localisation est requise
+        </span>
+      </div>
+
+      <!-- Boutique associée -->
+      <div class="field-group">
+        <label class="field-label">Boutique associée *</label>
+        <select
+          formControlName="shop"
+          class="field-input field-select"
+          [class.error]="f['shop'].invalid && f['shop'].touched"
+        >
+          <option value="">-- Choisir une boutique --</option>
+          <option *ngFor="let s of shops" [value]="s.name">
+            {{ s.name }}
+          </option>
+        </select>
+        <span class="field-error" *ngIf="f['shop'].invalid && f['shop'].touched">
+          Veuillez choisir une boutique
+        </span>
+      </div>
+
+      <!-- Catégorie -->
+      <div class="field-group">
+        <label class="field-label">Catégorie *</label>
+        <select
+          formControlName="category"
+          class="field-input field-select"
+          [class.error]="f['category'].invalid && f['category'].touched"
+        >
+          <option value="">-- Choisir une catégorie --</option>
+          <option *ngFor="let cat of categories" [value]="cat.name">
+            {{ cat.name }}
+          </option>
+        </select>
+        <span class="field-error" *ngIf="f['category'].invalid && f['category'].touched">
+          Veuillez choisir une catégorie
+        </span>
+      </div>
+
+      <!-- Toggle Gratuit / Payant -->
+      <div class="field-group">
+        <label class="field-label">Tarif</label>
+        <div class="toggle-row">
+          <label class="toggle-label">
+            <input type="checkbox" formControlName="isFree" class="toggle-input"/>
+            <span class="toggle-switch"></span>
+            <span class="toggle-text">
+              {{ f['isFree'].value ? '🎟️ Événement gratuit' : '💶 Événement payant' }}
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Prix  -->
+      <div class="field-group" *ngIf="!f['isFree'].value">
+        <label class="field-label">Prix (Ar) *</label>
+        <input
+          type="number"
+          formControlName="price"
+          class="field-input"
+          [class.error]="f['price'].invalid && f['price'].touched"
+          placeholder="Ex: 5000"
+          min="0"
+          step="500"
+        />
+        <span class="field-error" *ngIf="f['price'].invalid && f['price'].touched">
+          Le prix doit être un nombre positif
+        </span>
+      </div>
+
+      <!-- Upload image -->
+      <div class="field-group">
+        <label class="field-label">Image de l'événement</label>
+        <div class="upload-area upload-area-wide" (click)="imageInput.click()">
+          <img
+            *ngIf="imagePreview"
+            [src]="imagePreview"
+            class="preview-img preview-cover"
+            alt="Aperçu"
+          />
+          <div *ngIf="!imagePreview" class="upload-placeholder">
+            <span class="upload-icon">🖼️</span>
+            <p>Cliquez pour choisir une image</p>
+            <small>PNG, JPG — format paysage recommandé</small>
+          </div>
+        </div>
+        <input #imageInput type="file" accept="image/*" (change)="onImageChange($event)" hidden/>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <a routerLink="/evenements" class="btn-cancel">Annuler</a>
+        <button type="submit" class="btn-submit" [disabled]="isSaving">
+          <span *ngIf="!isSaving">
+            {{ isEditMode ? '💾 Enregistrer les modifications' : '✅ Créer l\'événement' }}
+          </span>
+          <span *ngIf="isSaving" class="saving-text">
+            <span class="mini-spinner"></span>
+            Enregistrement...
+          </span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

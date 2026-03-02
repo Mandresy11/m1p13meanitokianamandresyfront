@@ -33,7 +33,7 @@
         Retour
       </a>
 
-      <!-- 👇 BOUTONS ADMIN — visibles seulement pour l'admin -->
+      <!-- Boutons admin -->
       <div class="admin-hero-actions" *ngIf="estAdmin">
         <a [routerLink]="['/boutiques', shop._id, 'modifier']" class="btn-hero-edit">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
@@ -63,7 +63,7 @@
             {{ avoirIconeCategorie(shop.category.icon) }} {{ shop.category.name }}
           </span>
           <h1 class="hero-title">{{ shop.name }}</h1>
-          <p class="hero-location">📍 {{ shop.location.level }} - {{ shop.location.section }}</p>
+          <p class="hero-location">📍 Niveau {{ shop.location.level }} - Section {{ shop.location.section }}</p>
         </div>
       </div>
     </div>
@@ -116,14 +116,12 @@
             Nos produits
             <span class="products-count">{{ products.length }}</span>
           </h2>
-
-          <!-- 👇 Bouton ajouter un produit — admin seulement -->
-          <a *ngIf="estAdmin" [routerLink]="['/boutiques', shop._id, 'produits', 'ajouter']" class="btn-add-product">
+          <button *ngIf="estAdmin" class="btn-add-product" (click)="ouvrirModalAjout()">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
             </svg>
             Ajouter un produit
-          </a>
+          </button>
         </div>
 
         <div *ngIf="products.length === 0" class="no-products">
@@ -135,6 +133,11 @@
             <div class="product-img-wrapper">
               <img [src]="p.image" [alt]="p.name" class="product-img" loading="lazy" />
               <span class="stock-badge rupture" *ngIf="p.stock === 0">Rupture</span>
+              <!-- Boutons admin au hover -->
+              <div class="product-actions" *ngIf="estAdmin">
+                <button class="action-btn edit-btn" (click)="ouvrirModalEdition(p)" title="Modifier">✏️</button>
+                <button class="action-btn delete-btn" (click)="supprimerProduit(p._id, $event)" title="Supprimer">🗑️</button>
+              </div>
             </div>
             <div class="product-body">
               <h3 class="product-name">{{ p.name }}</h3>
@@ -150,4 +153,66 @@
 
     </div>
   </div>
+
+  <!-- ========== MODAL PRODUIT ========== -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="fermerModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+
+      <div class="modal-header">
+        <h2>{{ isEditMode ? '✏️ Modifier le produit' : '➕ Nouveau produit' }}</h2>
+        <button class="modal-close" (click)="fermerModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="image-upload-zone" (click)="fileInput.click()">
+          <img *ngIf="imagePreview" [src]="imagePreview" class="preview-img" />
+          <div *ngIf="!imagePreview" class="upload-placeholder">
+            <span class="upload-icon">📷</span>
+            <p>Cliquer pour ajouter une image</p>
+          </div>
+          <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
+        </div>
+
+        <div class="field-group">
+          <label>Nom du produit *</label>
+          <input type="text" [(ngModel)]="productForm.name" placeholder="Ex: T-shirt coton" />
+        </div>
+
+        <div class="field-group">
+          <label>Description</label>
+          <textarea [(ngModel)]="productForm.description" rows="3" placeholder="Description..."></textarea>
+        </div>
+
+        <div class="row-2">
+          <div class="field-group">
+            <label>Prix (MAD) *</label>
+            <input type="number" [(ngModel)]="productForm.price" min="0" />
+          </div>
+          <div class="field-group">
+            <label>Stock *</label>
+            <input type="number" [(ngModel)]="productForm.stock" min="0" />
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Catégorie *</label>
+          <select [(ngModel)]="productForm.category">
+            <option value="">-- Choisir --</option>
+            <option *ngFor="let cat of categories" [value]="cat.name">{{ cat.name }}</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="fermerModal()">Annuler</button>
+        <button class="btn-save" (click)="soumettreFormulaire()" [disabled]="isSaving">
+          {{ isSaving ? '⏳ Enregistrement...' : (isEditMode ? '💾 Sauvegarder' : '✅ Ajouter') }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 </div>

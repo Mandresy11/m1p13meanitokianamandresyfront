@@ -6,9 +6,11 @@ import { takeUntil }     from 'rxjs/operators';
 
 import { ShopService }   from '../shops/shop.service';
 import { AuthService }   from '../auth/auth.service';
+import { EventsService } from '../events/events.service';
 import { Shop, Category } from '../models/shop.model';
+import { Event as MallEvent } from '../models/event.model';
 
-// ── Interfaces ──────────────────────────────────────────────────────
+// Interfaces
 
 interface StatCard {
   icon: string;
@@ -30,8 +32,6 @@ interface CategorieStats {
   percent: number;
 }
 
-
-
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -47,6 +47,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   boutiquesFiltered: ShopRow[] = [];
   statCards: StatCard[]        = [];
   categoryStats: CategorieStats[] = [];
+
+  // ── Données événements
+  evenements: MallEvent[]       = [];
+  evenementsAVenir: MallEvent[] = [];
 
   isLoading   = true;
   hasError    = false;
@@ -66,10 +70,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private shopService: ShopService,
     private authService: AuthService,
+    private eventsService: EventsService,
     private cdr: ChangeDetectorRef
   ) {}
-
-
 
   ngOnInit(): void {
     this.initGreeting();
@@ -81,7 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  // ── Salutation ───────────────────────────────────────────────────
+  // Salutation
 
   private initGreeting(): void {
     const now = new Date();
@@ -97,7 +100,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.currentDate = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
   }
 
-  // ── Chargement des données ────────────────────────────────────────
+  //  Chargement des données
 
   loadData(): void {
     this.isLoading = true;
@@ -105,36 +108,46 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     forkJoin({
       shops:      this.shopService.chargerLesBoutiques(),
-      categories: this.shopService.chargerCategories()
+      categories: this.shopService.chargerCategories(),
+      events:     this.eventsService.chargerLesEvenements()
     })
     .pipe(takeUntil(this.destroy$))
     .subscribe({
-      next: ({ shops, categories }) => {
+      next: ({ shops, categories, events }) => {
         this.categories        = categories;
         this.boutiques         = shops.map((s, i) => this.enrichShop(s, i));
         this.boutiquesFiltered = [...this.boutiques];
         this.boutiquesRecentes = this.boutiques.slice(0, 5);
-        this.buildKPIs(shops.length, categories.length);
+
+        // Traitement des événements : on parse les dates
+        const now = new Date();
+        this.evenements = events.map(e => ({
+          ...e,
+          eventDateTime: new Date(e.eventDateTime)
+        }));
+
+        // Garder les 4 prochains événements (date >= aujourd'hui, triés par date)
+        this.evenementsAVenir = this.evenements
+          .filter(e => new Date(e.eventDateTime) >= now)
+          .sort((a, b) => new Date(a.eventDateTime).getTime() - new Date(b.eventDateTime).getTime())
+          .slice(0, 4);
+
+        this.buildKPIs(shops.length, categories.length, events.length);
         this.buildCategoryStats(shops);
 
-
         this.isLoading = false;
-
-
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('❌ Erreur API:', err.status, err.message);
         this.hasError  = true;
         this.isLoading = false;
-
-
         this.cdr.detectChanges();
       }
     });
   }
 
-
+  //  Enrichissement boutique (initiales + couleur)
 
   private enrichShop(shop: Shop, index: number): ShopRow {
     const words    = shop.name.trim().split(' ').filter(Boolean);
@@ -144,18 +157,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return { ...shop, initials, color: this.palette[index % this.palette.length] };
   }
 
+  //  KPI Cards
 
-
-  private buildKPIs(totalShops: number, totalCategories: number): void {
+  private buildKPIs(totalShops: number, totalCategories: number, totalEvents: number): void {
     this.statCards = [
       { icon: '🏬', label: 'Boutiques actives',  value: totalShops,      gradient: 'gradient-purple' },
       { icon: '🗂️', label: 'Catégories',         value: totalCategories, gradient: 'gradient-blue'   },
-      { icon: '📍', label: 'Niveaux couverts',   value: this.countLevels(), gradient: 'gradient-green' },
-      {
-        icon: '⭐', label: 'Taux de remplissage',
-        value: Math.min(Math.round((totalShops / 150) * 100), 100),
-        gradient: 'gradient-orange', suffix: '%'
-      }
+      { icon: '📅', label: 'Événements',          value: totalEvents,     gradient: 'gradient-pink'   },
+      { icon: '📍', label: 'Niveaux couverts',    value: this.countLevels(), gradient: 'gradient-green' },
     ];
   }
 
@@ -185,9 +194,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
       .slice(0, 6);
   }
 
-  //Recherche
-
-  onSearch(event: Event): void {
+  //  Helpers template
+  /** Recherche dans le tableau des boutiques */
+  onSearch(event: globalThis.Event): void {
     const q = (event.target as HTMLInputElement).value.toLowerCase().trim();
     this.searchQuery       = q;
     this.boutiquesFiltered = q
@@ -199,7 +208,20 @@ export class DashboardComponent implements OnInit, OnDestroy {
       : [...this.boutiques];
   }
 
-  // Retry
+  /** Retourne le jour du mois (ex: "14") */
+  getJour(date: Date | string): string {
+    return new Date(date).getDate().toString();
+  }
+
+  /** Retourne le mois abrégé en majuscules (ex: "JAN") */
+  getMoisAbbr(date: Date | string): string {
+    return new Date(date).toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase();
+  }
+
+  /** Retourne l'heure formatée (ex: "14h30") */
+  getHeure(date: Date | string): string {
+    return new Date(date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }).replace(':', 'h');
+  }
 
   retry(): void {
     this.loadData();
