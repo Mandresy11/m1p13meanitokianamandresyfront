@@ -147,7 +147,7 @@
    FILTRES
 ════════════════════════════════════════════ */
 .filters-section {
-  background: var(--white);
+  background: white;
   padding: 1.75rem 0;
   border-bottom: 1.5px solid var(--gray-200);
   position: sticky; top: 64px; z-index: 50;
