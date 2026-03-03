@@ -7,7 +7,8 @@ export interface User {
   password?: string;
   googleId?: string;                     // ← nouveau : pour les comptes Google
   isActive?: boolean;
-  role?: 'client' | 'admin' | 'shop';   // ← ajout de 'shop' qui existe dans le backend
+  role?: 'client' | 'admin' | 'shop';
+  shop?: string;   // ← ajout de 'shop' qui existe dans le backend
   createdAt?: string;
 }
 

@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     private cartService: CartService,
     private router: Router,
     private cdr: ChangeDetectorRef  // ✅ FIX : injection du ChangeDetectorRef
@@ -88,6 +88,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   fermerModal(): void {
     this.modalVisible = false;
   }
+
+  getRole(): string | null {
+  const role = localStorage.getItem('role');
+  return role ? JSON.parse(role) : null;
+}
 
   onConnecte(): void {
     this.cartService.chargerPanier().subscribe();

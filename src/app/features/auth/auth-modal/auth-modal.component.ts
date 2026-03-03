@@ -76,6 +76,8 @@ export class AuthModalComponent implements OnInit {
           this.fermer.emit();
           if (this.authService.estAdmin()) {
             this.router.navigate(['/dashboard']);
+          } else if (this.authService.obtenirRole() === 'shop') {
+            this.router.navigate(['/shop-dashboard']);
           } else {
             this.router.navigate(['/']);
           }

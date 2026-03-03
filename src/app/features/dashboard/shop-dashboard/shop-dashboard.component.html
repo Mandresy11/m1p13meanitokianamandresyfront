@@ -1,0 +1,247 @@
+<div class="dash-wrapper">
+
+  <!-- SKELETON -->
+  @if (isLoading) {
+    <div class="skeleton-wrap">
+      <div class="skeleton sk-hero"></div>
+      <div class="skeleton-kpi-grid">
+        <div class="skeleton sk-kpi"></div>
+        <div class="skeleton sk-kpi"></div>
+        <div class="skeleton sk-kpi"></div>
+        <div class="skeleton sk-kpi"></div>
+      </div>
+      <div class="skeleton sk-table"></div>
+    </div>
+  }
+
+  <!-- ERREUR -->
+  @if (hasError && !isLoading) {
+    <div class="error-state">
+      <div class="error-icon">⚠️</div>
+      <h3>Impossible de charger les données</h3>
+      <p>Vérifiez votre connexion et que le backend est démarré.</p>
+      <button class="btn-retry" (click)="retry()">↻ Réessayer</button>
+    </div>
+  }
+
+  @if (!isLoading && !hasError) {
+
+    <!-- HERO -->
+    <header class="shop-hero">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+
+      <div class="hero-inner">
+        <div class="hero-left">
+          <div class="shop-logo-wrap">
+            @if (shopLogo) {
+              <img [src]="shopLogo" [alt]="shopName" class="shop-logo-img" />
+            } @else {
+              <span class="shop-logo-fallback">🏪</span>
+            }
+          </div>
+          <div class="hero-text">
+            <p class="greeting">{{ greetingHour }}, {{ adminName }}</p>
+            <h1 class="shop-title">{{ shopName }}</h1>
+            <p class="hero-date">{{ currentDate }}</p>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <a [routerLink]="['/boutiques', shopId, 'modifier']" class="btn-hero-edit">
+            ✏️ Modifier la boutique
+          </a>
+          <a [routerLink]="['/boutiques', shopId]" class="btn-hero-view">
+            👁️ Voir la boutique
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- KPI CARDS -->
+    <section class="kpi-grid">
+      <article class="kpi-card gradient-purple">
+        <div class="kpi-icon">📦</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalOrders }}</span>
+          <span class="kpi-label">Commandes totales</span>
+        </div>
+        <div class="kpi-circle"></div>
+      </article>
+
+      <article class="kpi-card gradient-orange">
+        <div class="kpi-icon">⏳</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ pendingOrders }}</span>
+          <span class="kpi-label">En attente</span>
+        </div>
+        <div class="kpi-circle"></div>
+      </article>
+
+      <article class="kpi-card gradient-green">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalRevenue | number:'1.0-0' }} MAD</span>
+          <span class="kpi-label">Chiffre d'affaires</span>
+        </div>
+        <div class="kpi-circle"></div>
+      </article>
+
+      <article class="kpi-card gradient-blue">
+        <div class="kpi-icon">🛍️</div>
+        <div class="kpi-body">
+          <span class="kpi-value">{{ totalProducts }}</span>
+          <span class="kpi-label">Produits</span>
+        </div>
+        <div class="kpi-circle"></div>
+      </article>
+    </section>
+
+    <!-- TABS -->
+    <div class="tabs-bar">
+      <button class="tab-btn" [class.active]="activeTab === 'orders'" (click)="setTab('orders')">
+        📦 Commandes
+      </button>
+      <button class="tab-btn" [class.active]="activeTab === 'products'" (click)="setTab('products')">
+        🛍️ Produits
+      </button>
+    </div>
+
+    <!-- ORDERS TAB -->
+    @if (activeTab === 'orders') {
+      <section class="card table-card">
+
+        <div class="card-header">
+          <h2 class="card-title">📦 Commandes</h2>
+          <div class="header-controls">
+            <div class="search-wrapper">
+              <span class="search-icon">🔍</span>
+              <input
+                type="search"
+                class="search-input"
+                placeholder="N° commande ou client…"
+                (input)="onSearch($event)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Status filter pills -->
+        <div class="status-pills">
+          @for (s of ['all','pending','confirmed','preparing','ready','delivered','cancelled']; track s) {
+            <button
+              class="status-pill"
+              [class.active]="statusFilter === s"
+              (click)="onStatusFilter(s)"
+            >
+              {{ s === 'all' ? '🗂️ Toutes' : statusLabels[s] }}
+            </button>
+          }
+        </div>
+
+        <div class="table-scroll">
+          <table class="shops-table">
+            <thead>
+              <tr>
+                <th>N° commande</th>
+                <th>Client</th>
+                <th>Articles</th>
+                <th>Total</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @if (filteredOrders.length === 0) {
+                <tr>
+                  <td colspan="7" class="empty-cell">📭 Aucune commande trouvée.</td>
+                </tr>
+              }
+              @for (order of filteredOrders; track order._id) {
+                <tr class="shop-row">
+                  <td class="cell-mono">{{ order.orderNumber }}</td>
+                  <td>{{ order.user?.username || '—' }}</td>
+                  <td>
+                    <div class="items-list">
+                      @for (item of getShopItems(order); track item.productName) {
+                        <span class="item-chip">{{ item.productName }} ×{{ item.quantity }}</span>
+                      }
+                    </div>
+                  </td>
+                  <td class="cell-amount">{{ order.totalAmount | number:'1.0-0' }} MAD</td>
+                  <td>
+                    <span class="status-badge {{ statusColors[order.status] }}">
+                      {{ statusLabels[order.status] }}
+                    </span>
+                  </td>
+                  <td class="cell-muted">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                  <td>
+                    <select
+                      class="status-select"
+                      [value]="order.status"
+                      (change)="updateStatus(order._id, $any($event.target).value)"
+                    >
+                      <option value="pending">En attente</option>
+                      <option value="confirmed">Confirmée</option>
+                      <option value="preparing">En préparation</option>
+                      <option value="ready">Prête</option>
+                      <option value="delivered">Livrée</option>
+                      <option value="cancelled">Annulée</option>
+                    </select>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <p class="table-footer">
+          {{ filteredOrders.length }} commande{{ filteredOrders.length !== 1 ? 's' : '' }}
+        </p>
+
+      </section>
+    }
+
+    <!-- PRODUCTS TAB -->
+    @if (activeTab === 'products') {
+      <section class="card table-card">
+
+        <div class="card-header">
+          <h2 class="card-title">🛍️ Mes produits</h2>
+          <a [routerLink]="['/boutiques', shopId]" class="btn-add">
+            + Gérer les produits
+          </a>
+        </div>
+
+        <div class="products-grid">
+          @if (products.length === 0) {
+            <p class="empty-text">Aucun produit enregistré.</p>
+          }
+          @for (p of products; track p._id) {
+            <div class="product-card">
+              <div class="product-img-wrap">
+                <img [src]="p.image" [alt]="p.name" class="product-img" loading="lazy" />
+                @if (p.stock === 0) {
+                  <span class="rupture-badge">Rupture</span>
+                }
+              </div>
+              <div class="product-info">
+                <h3 class="product-name">{{ p.name }}</h3>
+                <p class="product-desc">{{ p.description }}</p>
+                <div class="product-footer">
+                  <span class="product-price">{{ p.price | number:'1.0-0' }} MAD</span>
+                  <span class="product-stock" [class.low]="p.stock <= 3 && p.stock > 0">
+                    {{ p.stock > 0 ? p.stock + ' en stock' : 'Rupture' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+      </section>
+    }
+
+  }
+
+</div>
