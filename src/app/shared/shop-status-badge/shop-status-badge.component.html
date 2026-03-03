@@ -1,0 +1,7 @@
+<div class="status-badge" *ngIf="status" [ngClass]="'status-' + status.color">
+  <span class="status-dot"></span>
+  <span class="status-label">{{ status.label }}</span>
+  <span class="status-next" *ngIf="showNextInfo && status.nextInfo">
+    · {{ status.nextInfo }}
+  </span>
+</div>

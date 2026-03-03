@@ -10,11 +10,18 @@ import { AuthService } from '../auth/auth.service';
 import { environment } from '../../../environments/environment.development';
 import { ToastService } from '../../shared/toast/toast.service';
 import { ConfirmModalComponent } from '../../shared/confirm/confirm-modal.component';
+import { ShopStatusBadgeComponent } from '../../shared/shop-status-badge/shop-status-badge.component';
 
 @Component({
   selector: 'app-shops',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, ConfirmModalComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    ConfirmModalComponent,
+    ShopStatusBadgeComponent
+  ],
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.css']
 })
@@ -34,14 +41,13 @@ export class ShopsComponent implements OnInit {
   categories: Category[] = [];
   isLoading = false;
 
-  // Modale de confirmation suppression
   modalVisible = false;
   shopIdASupprimer: string | null = null;
 
   categorieChoisie: string = 'tout';
   recherche: string = '';
 
-  // 🎲 NOUVEAU : état restaurant aléatoire
+  // 🎲 Restaurant aléatoire
   restaurantAleatoire: Shop | null = null;
   isSpinning = false;
   aucunRestaurant = false;
@@ -83,7 +89,7 @@ export class ShopsComponent implements OnInit {
     });
   }
 
-  // 🎲 NOUVEAU : choisir un restaurant au hasard
+  // Restaurant aléatoire
   choisirRestaurantAleatoire(): void {
     this.isSpinning = true;
     this.restaurantAleatoire = null;
@@ -101,7 +107,6 @@ export class ShopsComponent implements OnInit {
     }, 900);
   }
 
-  // 🎲 NOUVEAU : fermer la carte résultat
   fermerResultat(): void {
     this.restaurantAleatoire = null;
     this.aucunRestaurant = false;
@@ -124,7 +129,7 @@ export class ShopsComponent implements OnInit {
         this.boutiquesAffichees = this.boutiquesAffichees.filter(s => s._id !== this.shopIdASupprimer);
         this.shopIdASupprimer = null;
         this.cdr.detectChanges();
-        this.toastService.succes('Boutique supprimée avec succès ✓');
+        this.toastService.succes('Boutique supprimée avec succès &#x2713;');
       },
       error: (err) => {
         console.error('Erreur suppression:', err);
@@ -181,14 +186,14 @@ export class ShopsComponent implements OnInit {
     if (trouvé?.icon) return trouvé.icon;
 
     const icones: any = {
-      'Mode & Vêtements': '👔',
-      'Électronique': '📱',
-      'Restauration': '🍽️',
-      'Beauté & Cosmétiques': '💄',
-      'Sports & Loisirs': '⚽',
-      'Autre': '🏪'
+      'Mode & Vêtements': '&#x1F454;',
+      'Électronique': '&#x1F4F1;',
+      'Restauration': '&#x1F37D;&#xFE0F;',
+      'Beauté & Cosmétiques': '&#x1F484;',
+      'Sports & Loisirs': '&#x26BD;',
+      'Autre': '&#x1F3EA;'
     };
-    return icones[categorie] || '🏪';
+    return icones[categorie] || '&#x1F3EA;';
   }
 
   combienDansCetteCategorie(categorie: string): number {

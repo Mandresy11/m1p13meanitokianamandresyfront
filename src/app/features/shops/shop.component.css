@@ -15,9 +15,7 @@
   padding: 0 1.5rem;
 }
 
-/* ============================================
-   HEADER SECTION
-   ============================================ */
+/*HEADER SECTION */
 .header-section {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
   background-size: 400% 400%;
@@ -154,9 +152,7 @@
 
 .clear-btn:hover { background: #d1d5db; transform: scale(1.1); }
 
-/* ============================================
-   ANIMATIONS
-   ============================================ */
+/*ANIMATIONS */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(30px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -169,9 +165,7 @@
 .delay-350 { animation-delay: 0.35s; opacity: 0; }
 .delay-400 { animation-delay: 0.4s; opacity: 0; }
 
-/* ============================================
-   🎲 SECTION RESTAURANT ALÉATOIRE
-   ============================================ */
+/*SECTION RESTAURANT ALÉATOIRE */
 .random-section {
   background: white;
   padding: 2.5rem 0;
@@ -346,9 +340,7 @@
   font-size: 0.95rem;
 }
 
-/* ============================================
-   SECTION FILTRES
-   ============================================ */
+/*SECTION FILTRES */
 .filters-section {
   background: white;
   padding: 2rem 0;
@@ -432,9 +424,7 @@
 }
 .category-pill.active .pill-count { background: rgba(255, 255, 255, 0.3); }
 
-/* ============================================
-   SECTION RÉSULTATS
-   ============================================ */
+/* SECTION RÉSULTATS */
 .results-section { padding: 3rem 0; }
 .results-header { margin-bottom: 2rem; }
 
@@ -451,9 +441,7 @@
 .results-count .icon { width: 20px; height: 20px; color: #667eea; }
 .count-number { color: #667eea; font-weight: 700; font-size: 1.125rem; }
 
-/* ============================================
-   GRILLE DE BOUTIQUES
-   ============================================ */
+/* GRILLE DE BOUTIQUES */
 .shops-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -555,9 +543,7 @@
 .btn-arrow { width: 18px; height: 18px; transition: transform 0.3s ease; }
 .shop-btn:hover .btn-arrow { transform: translateX(4px); }
 
-/* ============================================
-   AUCUN RÉSULTAT
-   ============================================ */
+/*AUCUN RÉSULTAT*/
 .no-results {
   display: flex; justify-content: center; align-items: center;
   min-height: 400px; padding: 3rem 1rem;
@@ -590,9 +576,7 @@
 
 .reset-btn-large:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); }
 
-/* ============================================
-   ADMIN — BOUTON AJOUTER
-   ============================================ */
+/*ADMIN — BOUTON AJOUTER */
 .admin-actions {
   display: flex; justify-content: center;
   margin-top: 1.5rem; position: relative; z-index: 1;
@@ -606,12 +590,13 @@
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35);
 }
+.shop-status-wrapper {
+  margin-bottom: 0.75rem;
+}
 
 .btn-admin-add:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45); }
 
-/* ============================================
-   ADMIN — BOUTONS EDIT / DELETE SUR LES CARTES
-   ============================================ */
+
 .admin-card-actions {
   position: absolute; top: 12px; left: 12px;
   display: flex; gap: 0.4rem; z-index: 20;
@@ -631,9 +616,7 @@
 .btn-card-edit:hover  { background: white; transform: scale(1.12); }
 .btn-card-delete:hover { background: rgba(220, 38, 38, 0.95); transform: scale(1.12); }
 
-/* ============================================
-   RESPONSIVE
-   ============================================ */
+
 @media (max-width: 768px) {
   .header-section { padding: 4rem 0 6rem 0; }
   .page-title { font-size: 2rem; }

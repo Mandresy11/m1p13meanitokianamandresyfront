@@ -6,7 +6,7 @@
       <div class="badge-container fade-in-up delay-100">
         <div class="modern-badge">
           <span class="pulse-dot"></span>
-          <span class="badge-text">🛍️ Découvrez nos boutiques</span>
+          <span class="badge-text">&#x1F6CD;&#xFE0F; Découvrez nos boutiques</span>
         </div>
       </div>
 
@@ -47,7 +47,9 @@
     </div>
   </div>
 
-  <!-- 🎲 SECTION RESTAURANT ALÉATOIRE -->
+  <!-- ============================================
+       🎲 SECTION RESTAURANT ALÉATOIRE
+       ============================================ -->
   <div class="random-section">
     <div class="container">
 
@@ -116,7 +118,9 @@
           <span class="pill-text">Toutes</span>
           <span class="pill-count">{{ shops.length }}</span>
         </button>
-        <button *ngFor="let cat of categories" class="category-pill" [class.active]="categorieChoisie === cat._id" (click)="filtrerParCategorie(cat._id)">
+        <button *ngFor="let cat of categories" class="category-pill"
+          [class.active]="categorieChoisie === cat._id"
+          (click)="filtrerParCategorie(cat._id)">
           <span class="pill-icon">{{ cat.icon }}</span>
           <span class="pill-text">{{ cat.name }}</span>
           <span class="pill-count">{{ combienDansCetteCategorie(cat._id) }}</span>
@@ -140,8 +144,11 @@
         </p>
       </div>
 
+      <!-- Grille boutiques -->
       <div class="shops-grid" *ngIf="boutiquesAffichees.length > 0">
-        <div class="shop-card" *ngFor="let boutique of boutiquesAffichees; let i = index" [style.animation-delay]="(i * 0.1) + 's'">
+
+        <div class="shop-card" *ngFor="let boutique of boutiquesAffichees; let i = index"
+             [style.animation-delay]="(i * 0.1) + 's'">
 
           <div class="shop-image-wrapper">
             <img
@@ -183,6 +190,14 @@
               <span>Niveau {{ boutique.location.level }}, Section {{ boutique.location.section }}</span>
             </div>
 
+            <!-- 🆕 BADGE STATUT OUVERT/FERMÉ -->
+            <div class="shop-status-wrapper">
+              <app-shop-status-badge
+                [openingHours]="boutique.openingHours"
+                [showNextInfo]="true">
+              </app-shop-status-badge>
+            </div>
+
             <p class="shop-description">{{ boutique.description }}</p>
             <div class="separator"></div>
 
@@ -197,8 +212,10 @@
 
           </div>
         </div>
+
       </div>
 
+      <!-- Aucun résultat -->
       <div class="no-results" *ngIf="!isLoading && boutiquesAffichees.length === 0">
         <div class="no-results-content">
           <div class="no-results-icon">
@@ -215,6 +232,7 @@
     </div>
   </div>
 
+  <!-- Modale de confirmation suppression -->
   <app-confirm-modal
     [visible]="modalVisible"
     titre="Supprimer la boutique"

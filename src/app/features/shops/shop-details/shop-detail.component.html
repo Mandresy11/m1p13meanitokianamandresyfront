@@ -5,10 +5,10 @@
   <!-- Boutique introuvable -->
   <div *ngIf="notFound && !isLoading" class="not-found">
     <div class="not-found-content">
-      <div class="not-found-icon">🏪</div>
+      <div class="not-found-icon">&#x1F3EA;</div>
       <h2>Boutique introuvable</h2>
       <p>Cette boutique n'existe pas.</p>
-      <a routerLink="/boutiques" class="back-link">← Retour aux boutiques</a>
+      <a routerLink="/boutiques" class="back-link">&#x2190; Retour aux boutiques</a>
     </div>
   </div>
 
@@ -62,7 +62,7 @@
             {{ avoirIconeCategorie(shop.category.icon) }} {{ shop.category.name }}
           </span>
           <h1 class="hero-title">{{ shop.name }}</h1>
-          <p class="hero-location">📍 Niveau {{ shop.location.level }} - Section {{ shop.location.section }}</p>
+          <p class="hero-location">&#x1F4CD; Niveau {{ shop.location.level }} - Section {{ shop.location.section }}</p>
         </div>
       </div>
     </div>
@@ -70,16 +70,23 @@
     <!-- CORPS -->
     <div class="page-body">
 
-      <!-- Card Description -->
+      <!-- Card Statut + Description -->
       <div class="card">
-        <h2 class="card-title"><span>📋</span> À propos de la boutique</h2>
+        <div class="card-status-row">
+          <h2 class="card-title"><span>&#x1F4CB;</span> À propos de la boutique</h2>
+          <!-- BADGE STATUT OUVERT/FERMÉ -->
+          <app-shop-status-badge
+            [openingHours]="shop.openingHours"
+            [showNextInfo]="true">
+          </app-shop-status-badge>
+        </div>
         <p class="card-text">{{ shop.description }}</p>
       </div>
 
       <!-- Card Horaires + Contact -->
       <div class="card card-row">
         <div class="info-block">
-          <h3 class="info-label"><span>🕐</span> Horaires d'ouverture</h3>
+          <h3 class="info-label"><span>&#x1F550;</span> Horaires d'ouverture</h3>
           <div class="info-value">
             <ng-container *ngIf="shop.openingHours && shop.openingHours.length > 0; else noHours">
               <ul class="opening-hours-list">
@@ -103,7 +110,7 @@
         </div>
         <div class="divider-v"></div>
         <div class="info-block">
-          <h3 class="info-label"><span>📞</span> Téléphone</h3>
+          <h3 class="info-label"><span>&#x1F4DE;</span> Téléphone</h3>
           <a [href]="getTelLink()" class="info-value info-link">{{ shop.phoneNumber }}</a>
         </div>
       </div>
@@ -124,7 +131,7 @@
         </div>
 
         <div *ngIf="products.length === 0" class="no-products">
-          <p>🛍️ Aucun produit disponible pour le moment.</p>
+          <p>&#x1F6CD;&#xFE0F; Aucun produit disponible pour le moment.</p>
         </div>
 
         <div class="products-grid" *ngIf="products.length > 0">
@@ -133,8 +140,8 @@
               <img [src]="p.image" [alt]="p.name" class="product-img" loading="lazy" />
               <span class="stock-badge rupture" *ngIf="p.stock === 0">Rupture</span>
               <div class="product-actions" *ngIf="estAdmin">
-                <button class="action-btn edit-btn" (click)="ouvrirModalEdition(p)" title="Modifier">✏️</button>
-                <button class="action-btn delete-btn" (click)="supprimerProduit(p._id, $event)" title="Supprimer">🗑️</button>
+                <button class="action-btn edit-btn" (click)="ouvrirModalEdition(p)" title="Modifier">&#x270F;&#xFE0F;</button>
+                <button class="action-btn delete-btn" (click)="supprimerProduit(p._id, $event)" title="Supprimer">&#x1F5D1;&#xFE0F;</button>
               </div>
             </div>
             <div class="product-body">
@@ -165,7 +172,7 @@
         </div>
 
         <div *ngIf="reviews.length === 0" class="no-products">
-          <p>💬 Aucun avis pour le moment.</p>
+          <p>&#x1F4AC; Aucun avis pour le moment.</p>
         </div>
 
         <div class="reviews-grid" *ngIf="reviews.length > 0">
@@ -182,7 +189,7 @@
                 *ngFor="let star of getStars(5); let i = index"
                 class="star"
                 [class.star-filled]="i < r.rating"
-              >★</span>
+              >&#x2605;</span>
               <span class="review-rating-num">{{ r.rating }}/5</span>
             </div>
             <p class="review-comment">{{ r.comment }}</p>
@@ -193,13 +200,13 @@
     </div>
   </div>
 
-  <!--MODAL AVIS-->
+  <!-- MODAL AVIS -->
   <div class="modal-overlay" *ngIf="showReviewModal" (click)="fermerModalAvis()">
     <div class="modal-box" (click)="$event.stopPropagation()">
 
       <div class="modal-header">
-        <h2>⭐ Laisser un avis</h2>
-        <button class="modal-close" (click)="fermerModalAvis()">✕</button>
+        <h2>&#x2B50; Laisser un avis</h2>
+        <button class="modal-close" (click)="fermerModalAvis()">&#x2715;</button>
       </div>
 
       <div class="modal-body">
@@ -215,7 +222,7 @@
               style="font-size:1.8rem; cursor:pointer; transition: transform 0.15s;"
               [style.color]="star <= (hoveredStar || reviewForm.rating) ? '#f59e0b' : '#d1d5db'"
               [style.transform]="star <= hoveredStar ? 'scale(1.2)' : 'scale(1)'"
-            >★</span>
+            >&#x2605;</span>
           </div>
         </div>
 
@@ -224,27 +231,27 @@
           <textarea [(ngModel)]="reviewForm.comment" rows="4" placeholder="Décrivez votre expérience..."></textarea>
         </div>
 
-        <p *ngIf="reviewErreur" style="color:#ef4444; font-size:0.85rem; margin:0;">⚠ {{ reviewErreur }}</p>
+        <p *ngIf="reviewErreur" style="color:#ef4444; font-size:0.85rem; margin:0;">&#x26A0; {{ reviewErreur }}</p>
 
       </div>
 
       <div class="modal-footer">
         <button class="btn-cancel" (click)="fermerModalAvis()">Annuler</button>
         <button class="btn-save" (click)="soumettreAvis()" [disabled]="isSavingReview">
-          {{ isSavingReview ? '⏳ Envoi...' : ' Envoyer' }}
+          {{ isSavingReview ? '&#x23F3; Envoi...' : 'Envoyer' }}
         </button>
       </div>
 
     </div>
   </div>
 
-  <!--MODAL PRODUIT-->
+  <!-- MODAL PRODUIT -->
   <div class="modal-overlay" *ngIf="showModal" (click)="fermerModal()">
     <div class="modal-box" (click)="$event.stopPropagation()">
 
       <div class="modal-header">
-        <h2>{{ isEditMode ? '✏️ Modifier le produit' : '➕ Nouveau produit' }}</h2>
-        <button class="modal-close" (click)="fermerModal()">✕</button>
+        <h2>{{ isEditMode ? '&#x270F;&#xFE0F; Modifier le produit' : '&#x2795; Nouveau produit' }}</h2>
+        <button class="modal-close" (click)="fermerModal()">&#x2715;</button>
       </div>
 
       <div class="modal-body">
@@ -252,7 +259,7 @@
         <div class="image-upload-zone" (click)="fileInput.click()">
           <img *ngIf="imagePreview" [src]="imagePreview" class="preview-img" />
           <div *ngIf="!imagePreview" class="upload-placeholder">
-            <span class="upload-icon">📷</span>
+            <span class="upload-icon">&#x1F4F7;</span>
             <p>Cliquer pour ajouter une image</p>
           </div>
           <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden />
@@ -292,7 +299,7 @@
       <div class="modal-footer">
         <button class="btn-cancel" (click)="fermerModal()">Annuler</button>
         <button class="btn-save" (click)="soumettreFormulaire()" [disabled]="isSaving">
-          {{ isSaving ? '⏳ Enregistrement...' : (isEditMode ? '💾 Sauvegarder' : ' Ajouter') }}
+          {{ isSaving ? '&#x23F3; Enregistrement...' : (isEditMode ? '&#x1F4BE; Sauvegarder' : 'Ajouter') }}
         </button>
       </div>
 
