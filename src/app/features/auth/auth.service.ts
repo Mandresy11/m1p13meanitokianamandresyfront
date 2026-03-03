@@ -3,13 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { User, LoginRequest, RegisterRequest, AuthResponse, UserResponse } from '../models/user.model';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment'; // ✅ import générique, pas .development
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  // ✅ environment.apiUrl = 'http://localhost:3000' ou 'https://...onrender.com'
+  // + '/api/auth' => 'http://localhost:3000/api/auth' ✅
   private apiUrl = environment.apiUrl + '/api/auth';
 
   private utilisateurConnecte = new BehaviorSubject<User | null>(
@@ -56,7 +58,7 @@ export class AuthService {
       username: username,
       fullname: fullname,
       role:     role as 'client' | 'admin' | 'shop',
-      gender:   'other',   //
+      gender:   'other',
       email:    ''
     };
     this.sauvegarderSession(token, user);

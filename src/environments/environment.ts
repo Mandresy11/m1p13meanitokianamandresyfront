@@ -1,5 +1,6 @@
+
 export const environment = {
-  production: true,
-  apiUrl: 'https://m1p13mean-itokiana-mandresy-back.onrender.com',
+  production: false,
+  apiUrl: 'http://localhost:3000',
   featureFlag: false,
 };
